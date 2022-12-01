@@ -2,6 +2,7 @@ import { setRawItem, getRawItem, hasRawItem } from '@test/utils'
 import { DiskStore } from '@src/disk-store'
 import { DiskStoreAsyncView } from '@src/disk-store-async-view'
 import { toArrayAsync } from '@blackglory/prelude'
+import { delay } from 'extra-promise'
 import '@blackglory/jest-matchers'
 
 describe('DiskStoreAsyncView', () => {
@@ -116,7 +117,7 @@ describe('DiskStoreAsyncView', () => {
     })
     const view = createView(cache)
 
-    const result = await view.clear()
+    const result = view.clear()
 
     expect(result).toBeUndefined()
     expect(hasRawItem(cache, 'key')).toBeFalsy()
@@ -141,12 +142,24 @@ function createView(cache: DiskStore): DiskStoreAsyncView<string, string> {
   return new DiskStoreAsyncView<string, string>(
     cache
   , {
-      toString: x => x
-    , fromString: x => x
+      toString: async x => {
+        await delay(0)
+        return x
+      }
+    , fromString: async x => {
+        await delay(0)
+        return x
+      }
     }
   , { 
-      fromBuffer: x => x.toString()
-    , toBuffer: x => Buffer.from(x)
+      fromBuffer: async x => {
+        await delay(0)
+        return x.toString()
+      }
+    , toBuffer: async x => {
+        await delay(0)
+        return Buffer.from(x)
+      }
     }
   )
 }
