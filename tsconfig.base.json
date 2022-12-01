@@ -1,0 +1,28 @@
+{
+  "compilerOptions": {
+    "target": "ES2018"
+  , "module": "CommonJS"
+  , "strict": true
+  , "esModuleInterop": true
+  , "skipLibCheck": true
+  , "noUnusedLocals": true
+  , "noUnusedParameters": true
+  , "noImplicitOverride": true
+  , "baseUrl": "."
+  , "paths": {
+      "@src/*": ["src/*"]
+    , "@converters/*": ["src/converters/*"]
+    , "@test/*": ["__tests__/*"]
+    }
+  , "plugins" : [
+      {
+        "transform": "typescript-transform-paths"
+      , "exclude" : ["**/node_modules/**"]
+      }
+    , {
+        "transform": "typescript-transform-paths", "afterDeclarations": true
+      , "exclude" : ["**/node_modules/**"]
+      }
+    ]
+  }
+}
