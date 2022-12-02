@@ -12,7 +12,7 @@ yarn add extra-disk-store
 ```ts
 import { DiskStore } from 'extra-disk-store'
 
-const store = new DiskStore('/tmp/store')
+const store = await DiskStore.create('/tmp/store')
 store.set('key', Buffer.from('value'))
 const value = store.get('key')
 ```
@@ -34,7 +34,7 @@ class DiskStore {
   set(key: string, value: Buffer): void
   delete(key: string): void
   clear(): void
-  keys(): Iterable<string>
+  keys(): IterableIterator<string>
 }
 ```
 
@@ -90,7 +90,7 @@ class DiskStoreAsyncView<K, V> {
   set(key: K, value: V): Promise<void>
   delete(key: K): Promise<void>
   clear(): void
-  keys(): AsyncIterable<K>
+  keys(): AsyncIterableIterator<K>
 }
 ```
 

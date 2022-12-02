@@ -38,7 +38,7 @@ export class DiskStoreAsyncView<K, V> {
     this.store.clear()
   }
 
-  keys(): AsyncIterable<K> {
+  keys(): AsyncIterableIterator<K> {
     return mapAsync(
       this.store.keys()
     , key => this.keyConverter.fromString(key)

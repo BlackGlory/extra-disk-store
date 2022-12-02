@@ -38,7 +38,7 @@ export class DiskStoreView<K, V> {
     this.store.clear()
   }
 
-  keys(): Iterable<K> {
+  keys(): IterableIterator<K> {
     return map(
       this.store.keys()
     , key => this.keyConverter.fromString(key)
