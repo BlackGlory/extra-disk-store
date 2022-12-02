@@ -62,7 +62,7 @@ class DiskStoreView<K, V> {
   set(key: K, value: V): void
   clear(): void
   delete(key: K): void
-  keys(): Iterable<K>
+  keys(): IterableIterator<K>
 }
 ```
 

@@ -8,12 +8,12 @@ describe('DiskStoreView', () => {
   describe('has', () => {
     describe('item exists', () => {
       it('return true', async () => {
-        const cache = await DiskStore.create()
-        setRawItem(cache, {
+        const store = await DiskStore.create()
+        setRawItem(store, {
           key: 'key'
         , value: Buffer.from('value')
         })
-        const view = createView(cache)
+        const view = createView(store)
 
         const result = view.has('key')
 
@@ -23,8 +23,8 @@ describe('DiskStoreView', () => {
 
     describe('item does not exist', () => {
       it('return false', async () => {
-        const cache = await DiskStore.create()
-        const view = createView(cache)
+        const store = await DiskStore.create()
+        const view = createView(store)
 
         const result = view.has('key')
 
@@ -36,12 +36,12 @@ describe('DiskStoreView', () => {
   describe('get', () => {
     describe('item exists', () => {
       it('return item', async () => {
-        const cache = await DiskStore.create()
-        setRawItem(cache, {
+        const store = await DiskStore.create()
+        setRawItem(store, {
           key: 'key'
         , value: Buffer.from('value')
         })
-        const view = createView(cache)
+        const view = createView(store)
 
         const result = view.get('key')
 
@@ -51,8 +51,8 @@ describe('DiskStoreView', () => {
 
     describe('item does not exist', () => {
       it('return item', async () => {
-        const cache = await DiskStore.create()
-        const view = createView(cache)
+        const store = await DiskStore.create()
+        const view = createView(store)
 
         const result = view.get('key')
 
@@ -63,31 +63,31 @@ describe('DiskStoreView', () => {
 
   describe('set', () => {
     test('item exists', async () => {
-      const cache = await DiskStore.create()
-      setRawItem(cache, {
+      const store = await DiskStore.create()
+      setRawItem(store, {
         key: 'key'
       , value: Buffer.from('value')
       })
-      const view = createView(cache)
+      const view = createView(store)
       const newValue = 'new value'
 
       const result = view.set('key', newValue)
 
       expect(result).toBeUndefined()
-      expect(getRawItem(cache, 'key')).toEqual({
+      expect(getRawItem(store, 'key')).toEqual({
         key: 'key'
       , value: Buffer.from(newValue)
       })
     })
 
     test('data does not exist', async () => {
-      const cache = await DiskStore.create()
-      const view = createView(cache)
+      const store = await DiskStore.create()
+      const view = createView(store)
 
       const result = view.set('key', 'value')
 
       expect(result).toBeUndefined()
-      expect(getRawItem(cache, 'key')).toEqual({
+      expect(getRawItem(store, 'key')).toEqual({
         key: 'key'
       , value: Buffer.from('value')
       })
@@ -95,40 +95,40 @@ describe('DiskStoreView', () => {
   })
 
   test('delete', async () => {
-    const cache = await DiskStore.create()
-    setRawItem(cache, {
+    const store = await DiskStore.create()
+    setRawItem(store, {
       key: 'key'
     , value: Buffer.from('value')
     })
-    const view = createView(cache)
+    const view = createView(store)
 
     const result = view.delete('key')
 
     expect(result).toBeUndefined()
-    expect(hasRawItem(cache, 'key')).toBeFalsy()
+    expect(hasRawItem(store, 'key')).toBeFalsy()
   })
 
   test('clear', async () => {
-    const cache = await DiskStore.create()
-    setRawItem(cache, {
+    const store = await DiskStore.create()
+    setRawItem(store, {
       key: 'key'
     , value: Buffer.from('value')
     })
-    const view = createView(cache)
+    const view = createView(store)
 
     const result = view.clear()
 
     expect(result).toBeUndefined()
-    expect(hasRawItem(cache, 'key')).toBeFalsy()
+    expect(hasRawItem(store, 'key')).toBeFalsy()
   })
 
   test('keys', async () => {
-    const cache = await DiskStore.create()
-    setRawItem(cache, {
+    const store = await DiskStore.create()
+    setRawItem(store, {
       key: 'key'
     , value: Buffer.from('value')
     })
-    const view = createView(cache)
+    const view = createView(store)
 
     const iter = view.keys()
     const result = toArray(iter)
@@ -137,9 +137,9 @@ describe('DiskStoreView', () => {
   })
 })
 
-function createView(cache: DiskStore): DiskStoreView<string, string> {
+function createView(store: DiskStore): DiskStoreView<string, string> {
   return new DiskStoreView<string, string>(
-    cache
+    store
   , {
       toString: x => x
     , fromString: x => x

@@ -16,6 +16,7 @@ export class DiskStore {
       const db = new Database(filename ?? ':memory:')
 
       await migrateDatabase(db)
+      db.unsafeMode(true)
 
       return db
     })
@@ -95,7 +96,7 @@ export class DiskStore {
     `), [this._db]).run()
   })
 
-  keys = withLazyStatic((): Iterable<string> => {
+  keys = withLazyStatic((): IterableIterator<string> => {
     const iter: Iterable<{ key: string }> = lazyStatic(() => this._db.prepare(`
       SELECT key
         FROM store
