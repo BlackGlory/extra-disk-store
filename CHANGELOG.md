@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.4](https://github.com/BlackGlory/extra-disk-store/compare/v0.1.3...v0.1.4) (2022-12-05)
+
+
+### Bug Fixes
+
+* keys ([2bc0e74](https://github.com/BlackGlory/extra-disk-store/commit/2bc0e741fe332ec850497adba028d0582b7de60d))
+
 ### [0.1.3](https://github.com/BlackGlory/extra-disk-store/compare/v0.1.2...v0.1.3) (2022-12-05)
 
 
