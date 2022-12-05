@@ -139,3 +139,30 @@ class ZstandardValueConverter<T> implements IValueConverter<T>, IValueAsyncConve
   , level: number
   ): Promise<ZstandardValueConverter<T>>
 }
+```
+
+#### PrefixKeyConverter
+```ts
+class PrefixKeyConverter<T> implements IKeyConverter<T>, IKeyAsyncConverter<T> {
+  constructor(
+    keyConverter: IKeyConverter<T>
+  , prefix: string
+  )
+
+  toString(value: T): string
+  fromString(value: string): T
+}
+```
+
+#### PrefixKeyAsyncConverter
+```ts
+class PrefixKeyAsyncConverter<T> implements IKeyAsyncConverter<T> {
+  constructor(
+    keyConverter: IKeyConverter<T> | IKeyAsyncConverter<T>
+  , prefix: string
+  )
+
+  toString(value: T): Promise<string>
+  fromString(value: string): Promise<T>
+}
+```
