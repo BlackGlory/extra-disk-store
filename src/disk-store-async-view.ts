@@ -1,6 +1,8 @@
 import { DiskStore } from '@src/disk-store'
-import { mapAsync } from 'iterable-operator'
 import { IKeyAsyncConverter, IValueAsyncConverter } from '@src/types'
+import { pipe } from 'extra-utils'
+import { mapAsync, filterAsync } from 'iterable-operator'
+import { isntUndefined } from '@blackglory/prelude'
 
 export class DiskStoreAsyncView<K, V> {
   constructor(
@@ -39,9 +41,10 @@ export class DiskStoreAsyncView<K, V> {
   }
 
   keys(): AsyncIterableIterator<K> {
-    return mapAsync(
+    return pipe(
       this.store.keys()
-    , key => this.keyConverter.fromString(key)
+    , iter => mapAsync(iter, key => this.keyConverter.fromString(key))
+    , iter => filterAsync(iter, isntUndefined)
     )
   }
 }

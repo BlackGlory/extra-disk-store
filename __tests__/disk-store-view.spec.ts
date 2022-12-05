@@ -2,6 +2,7 @@ import { setRawItem, getRawItem, hasRawItem } from '@test/utils'
 import { DiskStore } from '@src/disk-store'
 import { DiskStoreView } from '@src/disk-store-view'
 import { toArray } from '@blackglory/prelude'
+import { PassthroughKeyConverter, PrefixKeyConverter } from '@src/converters'
 import '@blackglory/jest-matchers'
 
 describe('DiskStoreView', () => {
@@ -122,28 +123,56 @@ describe('DiskStoreView', () => {
     expect(hasRawItem(store, 'key')).toBeFalsy()
   })
 
-  test('keys', async () => {
-    const store = await DiskStore.create()
-    setRawItem(store, {
-      key: 'key'
-    , value: Buffer.from('value')
+  describe('keys', () => {
+    test('non-undefined', async () => {
+      const store = await DiskStore.create()
+      setRawItem(store, {
+        key: 'key'
+      , value: Buffer.from('value')
+      })
+      const view = createView(store)
+
+      const iter = view.keys()
+      const result = toArray(iter)
+
+      expect(result).toStrictEqual(['key'])
     })
-    const view = createView(store)
 
-    const iter = view.keys()
-    const result = toArray(iter)
+    test('undefined', async () => {
+      const store = await DiskStore.create()
+      setRawItem(store, {
+        key: 'non-prefix-key'
+      , value: Buffer.from('value')
+      })
+      setRawItem(store, {
+        key: 'prefix-key'
+      , value: Buffer.from('value')
+      })
+      const view = createViewWithPrefix(store, 'prefix-')
 
-    expect(result).toStrictEqual(['key'])
+      const iter = view.keys()
+      const result = toArray(iter)
+
+      expect(result).toStrictEqual(['key'])
+    })
   })
 })
+
+function createViewWithPrefix(store: DiskStore, prefix: string): DiskStoreView<string, string> {
+  return new DiskStoreView<string, string>(
+    store
+  , new PrefixKeyConverter(new PassthroughKeyConverter(), prefix)
+  , { 
+      fromBuffer: x => x.toString()
+    , toBuffer: x => Buffer.from(x)
+    }
+  )
+}
 
 function createView(store: DiskStore): DiskStoreView<string, string> {
   return new DiskStoreView<string, string>(
     store
-  , {
-      toString: x => x
-    , fromString: x => x
-    }
+  , new PassthroughKeyConverter()
   , { 
       fromBuffer: x => x.toString()
     , toBuffer: x => Buffer.from(x)

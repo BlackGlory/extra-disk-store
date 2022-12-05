@@ -1,5 +1,4 @@
 import { IKeyConverter, IKeyAsyncConverter } from '@src/types'
-import { assert } from '@blackglory/prelude'
 
 export class PrefixKeyConverter<T> implements IKeyConverter<T>, IKeyAsyncConverter<T> {
   constructor(
@@ -12,11 +11,13 @@ export class PrefixKeyConverter<T> implements IKeyConverter<T>, IKeyAsyncConvert
     return this.prefix + key
   }
 
-  fromString(value: string): T {
-    assert(value.startsWith(this.prefix), 'The key does not start with prefix')
-
-    const key = this.keyConverter.fromString(value.slice(this.prefix.length))
-    return key
+  fromString(value: string): T | undefined {
+    if (value.startsWith(this.prefix)) {
+      const key = this.keyConverter.fromString(value.slice(this.prefix.length))
+      return key
+    } else {
+      return undefined
+    }
   }
 }
 
@@ -31,10 +32,12 @@ export class PrefixKeyAsyncConverter<T> implements IKeyAsyncConverter<T> {
     return this.prefix + key
   }
 
-  async fromString(value: string): Promise<T> {
-    assert(value.startsWith(this.prefix), 'The key does not start with prefix')
-
-    const key = await this.keyConverter.fromString(value.slice(this.prefix.length))
-    return key
+  async fromString(value: string): Promise<T | undefined> {
+    if (value.startsWith(this.prefix)) {
+      const key = await this.keyConverter.fromString(value.slice(this.prefix.length))
+      return key
+    } else {
+      return undefined
+    }
   }
 }

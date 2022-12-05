@@ -3,6 +3,7 @@ import { DiskStore } from '@src/disk-store'
 import { DiskStoreAsyncView } from '@src/disk-store-async-view'
 import { toArrayAsync } from '@blackglory/prelude'
 import { delay } from 'extra-promise'
+import { PassthroughKeyConverter, PrefixKeyAsyncConverter } from '@src/converters'
 import '@blackglory/jest-matchers'
 
 describe('DiskStoreAsyncView', () => {
@@ -123,20 +124,60 @@ describe('DiskStoreAsyncView', () => {
     expect(hasRawItem(store, 'key')).toBeFalsy()
   })
 
-  test('keys', async () => {
-    const store = await DiskStore.create()
-    setRawItem(store, {
-      key: 'key'
-    , value: Buffer.from('value')
+  describe('keys', () => {
+    test('non-undefined', async () => {
+      const store = await DiskStore.create()
+      setRawItem(store, {
+        key: 'key'
+      , value: Buffer.from('value')
+      })
+      const view = createView(store)
+
+      const iter = view.keys()
+      const result = await toArrayAsync(iter)
+
+      expect(result).toStrictEqual(['key'])
     })
-    const view = createView(store)
 
-    const iter = view.keys()
-    const result = await toArrayAsync(iter)
+    test('undefined', async () => {
+      const store = await DiskStore.create()
+      setRawItem(store, {
+        key: 'non-prefix-key'
+      , value: Buffer.from('value')
+      })
+      setRawItem(store, {
+        key: 'prefix-key'
+      , value: Buffer.from('value')
+      })
+      const view = createViewWithPrefix(store, 'prefix-')
 
-    expect(result).toStrictEqual(['key'])
+      const iter = view.keys()
+      const result = await toArrayAsync(iter)
+
+      expect(result).toStrictEqual(['key'])
+    })
   })
 })
+
+function createViewWithPrefix(store: DiskStore, prefix: string): DiskStoreAsyncView<string, string> {
+  return new DiskStoreAsyncView<string, string>(
+    store
+  , new PrefixKeyAsyncConverter(
+      new PassthroughKeyConverter()
+    , prefix
+    )
+  , { 
+      fromBuffer: async x => {
+        await delay(0)
+        return x.toString()
+      }
+    , toBuffer: async x => {
+        await delay(0)
+        return Buffer.from(x)
+      }
+    }
+  )
+}
 
 function createView(store: DiskStore): DiskStoreAsyncView<string, string> {
   return new DiskStoreAsyncView<string, string>(

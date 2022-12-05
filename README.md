@@ -42,7 +42,7 @@ class DiskStore {
 ```ts
 interface IKeyConverter<T> {
   toString: (value: T) => string
-  fromString: (value: string) => T
+  fromString: (value: string) => T | undefined
 }
 
 interface IValueConverter<T> {
@@ -70,7 +70,7 @@ class DiskStoreView<K, V> {
 ```ts
 interface IKeyAsyncConverter<T> {
   toString: (value: T) => Awaitable<string>
-  fromString: (value: string) => Awaitable<T>
+  fromString: (value: string) => Awaitable<T | undefined>
 }
 
 interface IValueAsyncConverter<T> {

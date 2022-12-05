@@ -2,7 +2,7 @@ import { Awaitable } from '@blackglory/prelude'
 
 export interface IKeyConverter<T> {
   toString: (value: T) => string
-  fromString: (value: string) => T
+  fromString: (value: string) => T | undefined
 }
 
 export interface IValueConverter<T> {
@@ -12,7 +12,7 @@ export interface IValueConverter<T> {
 
 export interface IKeyAsyncConverter<T> {
   toString: (value: T) => Awaitable<string>
-  fromString: (value: string) => Awaitable<T>
+  fromString: (value: string) => Awaitable<T | undefined>
 }
 
 export interface IValueAsyncConverter<T> {

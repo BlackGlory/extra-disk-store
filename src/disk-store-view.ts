@@ -1,6 +1,8 @@
 import { DiskStore } from '@src/disk-store'
-import { map } from 'iterable-operator'
 import { IKeyConverter, IValueConverter } from '@src/types'
+import { pipe } from 'extra-utils'
+import { map, filter } from 'iterable-operator'
+import { isntUndefined } from '@blackglory/prelude'
 
 export class DiskStoreView<K, V> {
   constructor(
@@ -39,9 +41,10 @@ export class DiskStoreView<K, V> {
   }
 
   keys(): IterableIterator<K> {
-    return map(
+    return pipe(
       this.store.keys()
-    , key => this.keyConverter.fromString(key)
+    , iter => map(iter, key => this.keyConverter.fromString(key))
+    , iter => filter(iter, isntUndefined)
     )
   }
 }
