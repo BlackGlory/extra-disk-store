@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.3](https://github.com/BlackGlory/extra-disk-store/compare/v0.1.2...v0.1.3) (2022-12-05)
+
+
+### Features
+
+* add `PrefixKeyConverter`, `PrefixKeyAsyncConverter` ([7493c2d](https://github.com/BlackGlory/extra-disk-store/commit/7493c2d5028d87b2a61c36255ba278cfe1424263))
+
 ### [0.1.2](https://github.com/BlackGlory/extra-disk-store/compare/v0.1.1...v0.1.2) (2022-12-02)
 
 
