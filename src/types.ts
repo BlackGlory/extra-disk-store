@@ -1,5 +1,12 @@
 import { Awaitable } from '@blackglory/prelude'
 
+export interface ICache {
+  set(key: string, value: Buffer | boolean | undefined): void
+  get(key: string): Buffer | boolean | undefined
+  delete(key: string): void
+  clear(): void
+}
+
 export interface IKeyConverter<T> {
   toString: (value: T) => string
   fromString: (value: string) => T | undefined

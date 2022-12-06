@@ -1,12 +1,12 @@
 import { setRawItem, getRawItem, hasRawItem } from '@test/utils'
-import { DiskStore } from '@src/disk-store'
+import { DiskStore, CacheKeyType, createCacheKey } from '@src/disk-store'
 import { toArray } from '@blackglory/prelude'
 import '@blackglory/jest-matchers'
 
 describe('DiskStore', () => {
   describe('has', () => {
     describe('item exists', () => {
-      it('return true', async () => {
+      test('without cache', async () => {
         const store = await DiskStore.create()
         setRawItem(store, {
           key: 'key'
@@ -17,22 +17,48 @@ describe('DiskStore', () => {
 
         expect(result).toBe(true)
       })
+
+      test('with cache', async () => {
+        const cache = new Map()
+        const store = await DiskStore.create(undefined, cache)
+        setRawItem(store, {
+          key: 'key'
+        , value: Buffer.from('value')
+        })
+
+        const result = store.has('key')
+
+        expect(result).toBe(true)
+        expect(cache.size).toBe(1)
+        expect(cache.get(createCacheKey(CacheKeyType.Exist, 'key'))).toBe(true)
+      })
     })
 
     describe('item does not exist', () => {
-      it('return false', async () => {
+      test('without cache', async () => {
         const store = await DiskStore.create()
 
         const result = store.has('key')
 
         expect(result).toBe(false)
       })
+
+      test('with cache', async () => {
+        const cache = new Map()
+        const store = await DiskStore.create(undefined, cache)
+
+        const result = store.has('key')
+
+        expect(result).toBe(false)
+        expect(cache.size).toBe(1)
+        expect(cache.get(createCacheKey(CacheKeyType.Exist, 'key'))).toBe(false)
+      })
     })
   })
 
   describe('get', () => {
     describe('item exists', () => {
-      it('return item', async () => {
+      test('without cache', async () => {
         const store = await DiskStore.create()
         const value = Buffer.from('value')
         setRawItem(store, {
@@ -44,80 +70,190 @@ describe('DiskStore', () => {
 
         expect(result).toStrictEqual(value)
       })
+
+      test('with cache', async () => {
+        const value = Buffer.from('value')
+        const cache = new Map()
+        cache.set(createCacheKey(CacheKeyType.Value, 'key'), value)
+        const store = await DiskStore.create(undefined, cache)
+        setRawItem(store, {
+          key: 'key'
+        , value
+        })
+
+        setRawItem(store, {
+          key: 'key'
+        , value: Buffer.from('new-value')
+        })
+        const result = store.get('key')
+
+        expect(result).toStrictEqual(value)
+        expect(cache.size).toBe(1)
+        expect(cache.get(createCacheKey(CacheKeyType.Value, 'key'))).toBe(value)
+      })
     })
 
     describe('item does not exist', () => {
-      it('return item', async () => {
+      test('without cache', async () => {
         const store = await DiskStore.create()
 
         const result = store.get('key')
 
         expect(result).toBeUndefined()
       })
+
+      test('with cache', async () => {
+        const cache = new Map()
+        const store = await DiskStore.create(undefined, cache)
+
+        const result = store.get('key')
+
+        expect(result).toBeUndefined()
+        expect(cache.size).toBe(1)
+        expect(cache.get(createCacheKey(CacheKeyType.Value, 'key'))).toBe(undefined)
+      })
     })
   })
 
   describe('set', () => {
-    test('item exists', async () => {
+    describe('item exists', () => {
+      test('without cache', async () => {
+        const store = await DiskStore.create()
+        const value = Buffer.from('value')
+        setRawItem(store, {
+          key: 'key'
+        , value
+        })
+        const newValue = Buffer.from('new value')
+
+        const result = store.set('key', newValue)
+
+        expect(result).toBeUndefined()
+        expect(getRawItem(store, 'key')).toEqual({
+          key: 'key'
+        , value: newValue
+        })
+      })
+
+      test('with cache', async () => {
+        const value = Buffer.from('value')
+        const cache = new Map()
+        cache.set(createCacheKey(CacheKeyType.Value, 'key'), value)
+        const store = await DiskStore.create(undefined, cache)
+        setRawItem(store, {
+          key: 'key'
+        , value
+        })
+
+        const newValue = Buffer.from('new value')
+        const result = store.set('key', newValue)
+
+        expect(result).toBeUndefined()
+        expect(getRawItem(store, 'key')).toEqual({
+          key: 'key'
+        , value: newValue
+        })
+        expect(cache.size).toBe(0)
+      })
+    })
+
+    describe('data does not exist', () => {
+      test('without cache', async () => {
+        const store = await DiskStore.create()
+        const value = Buffer.from('value')
+        const result = store.set('key', value)
+
+        expect(result).toBeUndefined()
+        expect(getRawItem(store, 'key')).toEqual({
+          key: 'key'
+        , value
+        })
+      })
+
+      test('with cache', async () => {
+        const cache = new Map()
+        cache.set(createCacheKey(CacheKeyType.Value, 'key'), Buffer.from('value'))
+        const store = await DiskStore.create(undefined, cache)
+
+        const value = Buffer.from('value')
+        const result = store.set('key', value)
+
+        expect(result).toBeUndefined()
+        expect(getRawItem(store, 'key')).toEqual({
+          key: 'key'
+        , value
+        })
+        expect(cache.size).toBe(0)
+      })
+    })
+  })
+
+  describe('delete', () => {
+    test('without cache', async () => {
       const store = await DiskStore.create()
       const value = Buffer.from('value')
       setRawItem(store, {
         key: 'key'
       , value
       })
-      const newValue = Buffer.from('new value')
 
-      const result = store.set('key', newValue)
+      const result = store.delete('key')
 
       expect(result).toBeUndefined()
-      expect(getRawItem(store, 'key')).toEqual({
-        key: 'key'
-      , value: newValue
-      })
+      expect(hasRawItem(store, 'key')).toBeFalsy()
     })
 
-    test('data does not exist', async () => {
-      const store = await DiskStore.create()
+    test('with cache', async () => {
+      const cache = new Map()
+      cache.set(createCacheKey(CacheKeyType.Exist, 'key'), Buffer.from('value'))
+      const store = await DiskStore.create(undefined, cache)
       const value = Buffer.from('value')
-      const result = store.set('key', value)
-
-      expect(result).toBeUndefined()
-      expect(getRawItem(store, 'key')).toEqual({
+      setRawItem(store, {
         key: 'key'
       , value
       })
+
+      const result = store.delete('key')
+
+      expect(result).toBeUndefined()
+      expect(hasRawItem(store, 'key')).toBeFalsy()
+      expect(cache.size).toBe(0)
     })
   })
 
-  test('delete', async () => {
-    const store = await DiskStore.create()
-    const value = Buffer.from('value')
-    setRawItem(store, {
-      key: 'key'
-    , value
+  describe('clear', () => {
+    test('without cache', async () => {
+      const store = await DiskStore.create()
+      setRawItem(store, {
+        key: 'key'
+      , value: Buffer.from('value')
+      })
+
+      const result = store.clear()
+
+      expect(result).toBeUndefined()
+      expect(hasRawItem(store, 'key')).toBeFalsy()
     })
 
-    const result = store.delete('key')
+    test('with cache', async () => {
+      const cache = new Map()
+      cache.set(createCacheKey(CacheKeyType.Exist, 'key'), Buffer.from('value'))
+      const store = await DiskStore.create(undefined, cache)
+      setRawItem(store, {
+        key: 'key'
+      , value: Buffer.from('value')
+      })
 
-    expect(result).toBeUndefined()
-    expect(hasRawItem(store, 'key')).toBeFalsy()
-  })
+      const result = store.clear()
 
-  test('clear', async () => {
-    const store = await DiskStore.create()
-    setRawItem(store, {
-      key: 'key'
-    , value: Buffer.from('value')
+      expect(result).toBeUndefined()
+      expect(hasRawItem(store, 'key')).toBeFalsy()
+      expect(cache.size).toBe(0)
     })
-
-    const result = store.clear()
-
-    expect(result).toBeUndefined()
-    expect(hasRawItem(store, 'key')).toBeFalsy()
   })
 
   describe('keys', () => {
-    test('normal', async () => {
+    test('general', async () => {
       const store = await DiskStore.create()
       setRawItem(store, {
         key: 'key'

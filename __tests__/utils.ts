@@ -7,11 +7,13 @@ interface IRawItem {
 
 export function setRawItem(store: DiskStore, raw: IRawItem): void {
   store._db.prepare(`
-    INSERT INTO store(
+    INSERT INTO store (
                   key
                 , value
                 )
          VALUES ($key, $value)
+             ON CONFLICT(key)
+             DO UPDATE SET value = $value
   `).run(raw)
 }
 

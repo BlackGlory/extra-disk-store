@@ -20,8 +20,15 @@ const value = store.get('key')
 ## API
 ### DiskStore
 ```ts
+interface ICache {
+  set(key: string, value: Buffer | boolean | undefined): void
+  get(key: string): Buffer | boolean | undefined
+  delete(key: string): void
+  clear(): void
+}
+
 class DiskStore {
-  static create(filename?: string): Promise<DiskStore>
+  static create(filename?: string, cache?: ICache): Promise<DiskStore>
 
   close(): void
 
