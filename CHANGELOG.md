@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.5](https://github.com/BlackGlory/extra-disk-store/compare/v0.1.4...v0.1.5) (2022-12-06)
+
+
+### Features
+
+* add the optional parameter `cache` ([e30fd73](https://github.com/BlackGlory/extra-disk-store/commit/e30fd73d201ca48d74a91cfc8cbb7a737bd8811c))
+
 ### [0.1.4](https://github.com/BlackGlory/extra-disk-store/compare/v0.1.3...v0.1.4) (2022-12-05)
 
 
