@@ -7,7 +7,6 @@ import {
 , JSONValueConverter as StoreJSONValueConverter
 } from '..'
 import { createTempName, remove } from 'extra-filesystem'
-import { Level } from 'level'
 import fs from 'fs/promises'
 import prettyBytes from 'pretty-bytes'
 import lmdb from 'lmdb'
@@ -60,37 +59,6 @@ go(async () => {
     }
   })
 
-  benchmark.addCase('LevelDB (write)', async () => {
-    const filename = await createTempName()
-    const db = new Level(filename)
-    await db.open()
-    const store = db.sublevel('store', {
-      valueEncoding: 'utf8'
-    })
-
-    return {
-      beforeEach() {
-        store.clear()
-      }
-    , async iterate() {
-        const promises: Array<Promise<unknown>> = []
-        for (let i = 100; i--;) {
-          promises.push(store.put(`${i}`, JSON.stringify(i)))
-        }
-        await Promise.all(promises)
-      }
-    , async afterAll() {
-        await store.close()
-        await db.close()
-
-        const { size } = await fs.stat(filename)
-        console.log(`LevelDB (write) size: ${prettyBytes(size)}`)
-
-        await remove(filename)
-      }
-    }
-  })
-
   benchmark.addCase('ExtraDiskStore (write)', async () => {
     const filename = await createTempName()
     const store = await DiskStore.create(filename)
@@ -133,33 +101,6 @@ go(async () => {
     }
   })
 
-  benchmark.addCase('LevelDB (overwrite)', async () => {
-    const filename = await createTempName()
-    const db = new Level(filename)
-    await db.open()
-    const store = db.sublevel('store', {
-      valueEncoding: 'utf8'
-    })
-    for (let i = 100; i--;) {
-      await store.put(`${i}`, JSON.stringify(i))
-    }
-
-    return {
-      async iterate() {
-        const promises: Array<Promise<unknown>> = []
-        for (let i = 100; i--;) {
-          promises.push(store.put(`${i}`, JSON.stringify(i)))
-        }
-        await Promise.all(promises)
-      }
-    , async afterAll() {
-        await store.close()
-        await db.close()
-        await remove(filename)
-      }
-    }
-  })
-
   benchmark.addCase('ExtraDiskStore (overwrite)', async () => {
     const filename = await createTempName()
     const store = await DiskStore.create(filename)
@@ -194,33 +135,6 @@ go(async () => {
     return () => {
       for (let i = 100; i--;) {
         map.set(`${i}`, JSON.stringify(i))
-      }
-    }
-  })
-
-  benchmark.addCase('LevelDB (read)', async () => {
-    const filename = await createTempName()
-    const db = new Level(filename)
-    await db.open()
-    const store = db.sublevel('store', {
-      valueEncoding: 'utf8'
-    })
-    for (let i = 100; i--;) {
-      await store.put(`${i}`, JSON.stringify(i))
-    }
-
-    return {
-      async iterate() {
-        const promises: Array<Promise<unknown>> = []
-        for (let i = 100; i--;) {
-          promises.push(store.get(`${i}`))
-        }
-        await Promise.all(promises)
-      }
-    , async afterAll() {
-        await store.close()
-        await db.close()
-        await remove(filename)
       }
     }
   })
