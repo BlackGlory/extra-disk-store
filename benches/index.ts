@@ -12,6 +12,21 @@ import { Level } from 'level'
 const benchmark = new Benchmark('I/O performance')
 
 go(async () => {
+  benchmark.addCase('Map (write)', async () => {
+    const map = new Map<string, string>()
+
+    return {
+      beforeEach() {
+        map.clear()
+      }
+    , iterate() {
+        for (let i = 100; i--;) {
+          map.set(`${i}`, JSON.stringify(i))
+        }
+      }
+    }
+  })
+
   benchmark.addCase('LevelDB (write)', async () => {
     const filename = await createTempName()
     const db = new Level(filename)
@@ -58,6 +73,19 @@ go(async () => {
     , async afterAll() {
         store.close()
         await remove(filename)
+      }
+    }
+  })
+
+  benchmark.addCase('Map (overwrite)', async () => {
+    const map = new Map<string, string>()
+    for (let i = 100; i--;) {
+      map.set(`${i}`, JSON.stringify(i))
+    }
+
+    return () => {
+      for (let i = 100; i--;) {
+        map.set(`${i}`, JSON.stringify(i))
       }
     }
   })
@@ -112,6 +140,18 @@ go(async () => {
     }
   })
 
+  benchmark.addCase('Map (read)', async () => {
+    const map = new Map<string, string>()
+    for (let i = 100; i--;) {
+      map.set(`${i}`, JSON.stringify(i))
+    }
+
+    return () => {
+      for (let i = 100; i--;) {
+        map.set(`${i}`, JSON.stringify(i))
+      }
+    }
+  })
 
   benchmark.addCase('LevelDB (read)', async () => {
     const filename = await createTempName()
