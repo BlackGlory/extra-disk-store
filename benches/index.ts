@@ -8,6 +8,8 @@ import {
 } from '..'
 import { createTempName, remove } from 'extra-filesystem'
 import { Level } from 'level'
+import fs from 'fs/promises'
+import prettyBytes from 'pretty-bytes'
 
 const benchmark = new Benchmark('I/O performance')
 
@@ -47,6 +49,10 @@ go(async () => {
     , async afterAll() {
         await store.close()
         await db.close()
+
+        const { size } = await fs.stat(filename)
+        console.log(`LevelDB (write) size: ${prettyBytes(size)}`)
+
         await remove(filename)
       }
     }
@@ -72,6 +78,10 @@ go(async () => {
       }
     , async afterAll() {
         store.close()
+
+        const { size } = await fs.stat(filename)
+        console.log(`ExtraDiskStore (write) size: ${prettyBytes(size)}`)
+
         await remove(filename)
       }
     }
