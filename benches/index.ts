@@ -10,6 +10,7 @@ import { createTempName, remove } from 'extra-filesystem'
 import { Level } from 'level'
 import fs from 'fs/promises'
 import prettyBytes from 'pretty-bytes'
+import lmdb from 'lmdb'
 
 const benchmark = new Benchmark('I/O performance')
 
@@ -29,22 +30,54 @@ go(async () => {
     }
   })
 
+  benchmark.addCase('LMDB (write)', async () => {
+    const filename = await createTempName()
+    const db = lmdb.open({
+      path: filename
+    , compression: false
+    , encoding: 'binary'
+    })
+
+    return {
+      async beforeEach() {
+        await db.clearAsync()
+      }
+    , async iterate() {
+        const promises: Array<Promise<unknown>> = []
+        for (let i = 100; i--;) {
+          promises.push(db.put(`${i}`, Buffer.from(JSON.stringify(i))))
+        }
+        await Promise.all(promises)
+      }
+    , async afterAll() {
+        await db.close()
+
+        const { size } = await fs.stat(filename)
+        console.log(`LMDB (write) size: ${prettyBytes(size)}`)
+
+        await remove(filename)
+      }
+    }
+  })
+
   benchmark.addCase('LevelDB (write)', async () => {
     const filename = await createTempName()
     const db = new Level(filename)
     await db.open()
     const store = db.sublevel('store', {
-      valueEncoding: 'binary'
+      valueEncoding: 'utf8'
     })
 
     return {
       beforeEach() {
         store.clear()
       }
-    , iterate() {
+    , async iterate() {
+        const promises: Array<Promise<unknown>> = []
         for (let i = 100; i--;) {
-          store.put(`${i}`, JSON.stringify(i))
+          promises.push(store.put(`${i}`, JSON.stringify(i)))
         }
+        await Promise.all(promises)
       }
     , async afterAll() {
         await store.close()
@@ -105,17 +138,19 @@ go(async () => {
     const db = new Level(filename)
     await db.open()
     const store = db.sublevel('store', {
-      valueEncoding: 'binary'
+      valueEncoding: 'utf8'
     })
     for (let i = 100; i--;) {
-      store.put(`${i}`, JSON.stringify(i))
+      await store.put(`${i}`, JSON.stringify(i))
     }
 
     return {
-      iterate() {
+      async iterate() {
+        const promises: Array<Promise<unknown>> = []
         for (let i = 100; i--;) {
-          store.put(`${i}`, JSON.stringify(i))
+          promises.push(store.put(`${i}`, JSON.stringify(i)))
         }
+        await Promise.all(promises)
       }
     , async afterAll() {
         await store.close()
@@ -168,17 +203,19 @@ go(async () => {
     const db = new Level(filename)
     await db.open()
     const store = db.sublevel('store', {
-      valueEncoding: 'binary'
+      valueEncoding: 'utf8'
     })
     for (let i = 100; i--;) {
-      store.put(`${i}`, JSON.stringify(i))
+      await store.put(`${i}`, JSON.stringify(i))
     }
 
     return {
-      iterate() {
+      async iterate() {
+        const promises: Array<Promise<unknown>> = []
         for (let i = 100; i--;) {
-          store.get(`${i}`)
+          promises.push(store.get(`${i}`))
         }
+        await Promise.all(promises)
       }
     , async afterAll() {
         await store.close()
