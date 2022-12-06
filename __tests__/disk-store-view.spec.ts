@@ -7,58 +7,50 @@ import '@blackglory/jest-matchers'
 
 describe('DiskStoreView', () => {
   describe('has', () => {
-    describe('item exists', () => {
-      it('return true', async () => {
-        const store = await DiskStore.create()
-        setRawItem(store, {
-          key: 'key'
-        , value: Buffer.from('value')
-        })
-        const view = createView(store)
-
-        const result = view.has('key')
-
-        expect(result).toBe(true)
+    test('item exists', async () => {
+      const store = await DiskStore.create()
+      setRawItem(store, {
+        key: 'key'
+      , value: Buffer.from('value')
       })
+      const view = createView(store)
+
+      const result = view.has('key')
+
+      expect(result).toBe(true)
     })
 
-    describe('item does not exist', () => {
-      it('return false', async () => {
-        const store = await DiskStore.create()
-        const view = createView(store)
+    test('item does not exist', async () => {
+      const store = await DiskStore.create()
+      const view = createView(store)
 
-        const result = view.has('key')
+      const result = view.has('key')
 
-        expect(result).toBe(false)
-      })
+      expect(result).toBe(false)
     })
   })
 
   describe('get', () => {
-    describe('item exists', () => {
-      it('return item', async () => {
-        const store = await DiskStore.create()
-        setRawItem(store, {
-          key: 'key'
-        , value: Buffer.from('value')
-        })
-        const view = createView(store)
-
-        const result = view.get('key')
-
-        expect(result).toStrictEqual('value')
+    test('item exists', async () => {
+      const store = await DiskStore.create()
+      setRawItem(store, {
+        key: 'key'
+      , value: Buffer.from('value')
       })
+      const view = createView(store)
+
+      const result = view.get('key')
+
+      expect(result).toStrictEqual('value')
     })
 
-    describe('item does not exist', () => {
-      it('return item', async () => {
-        const store = await DiskStore.create()
-        const view = createView(store)
+    test('item does not exist', async () => {
+      const store = await DiskStore.create()
+      const view = createView(store)
 
-        const result = view.get('key')
+      const result = view.get('key')
 
-        expect(result).toBeUndefined()
-      })
+      expect(result).toBeUndefined()
     })
   })
 
