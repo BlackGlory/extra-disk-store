@@ -101,6 +101,32 @@ go(async () => {
     }
   })
 
+  benchmark.addCase('LMDB (write)', async () => {
+    const filename = await createTempName()
+    const db = lmdb.open({
+      path: filename
+    , compression: false
+    , encoding: 'binary'
+    })
+    for (let i = 100; i--;) {
+      await db.put(`${i}`, Buffer.from(JSON.stringify(i)))
+    }
+
+    return {
+      async iterate() {
+        const promises: Array<Promise<unknown>> = []
+        for (let i = 100; i--;) {
+          promises.push(db.put(`${i}`, Buffer.from(JSON.stringify(i))))
+        }
+        await Promise.all(promises)
+      }
+    , async afterAll() {
+        await db.close()
+        await remove(filename)
+      }
+    }
+  })
+
   benchmark.addCase('ExtraDiskStore (overwrite)', async () => {
     const filename = await createTempName()
     const store = await DiskStore.create(filename)
@@ -135,6 +161,32 @@ go(async () => {
     return () => {
       for (let i = 100; i--;) {
         map.set(`${i}`, JSON.stringify(i))
+      }
+    }
+  })
+
+  benchmark.addCase('LMDB (read)', async () => {
+    const filename = await createTempName()
+    const db = lmdb.open({
+      path: filename
+    , compression: false
+    , encoding: 'binary'
+    })
+    for (let i = 100; i--;) {
+      await db.put(`${i}`, Buffer.from(JSON.stringify(i)))
+    }
+
+    return {
+      async iterate() {
+        const promises: Array<Promise<unknown>> = []
+        for (let i = 100; i--;) {
+          promises.push(db.get(`${i}`))
+        }
+        await Promise.all(promises)
+      }
+    , async afterAll() {
+        await db.close()
+        await remove(filename)
       }
     }
   })
