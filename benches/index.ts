@@ -30,8 +30,8 @@ go(async () => {
   })
 
   benchmark.addCase('LMDB (write)', async () => {
-    const pathname = await createTempName()
-    const db = lmdb.open(pathname, {
+    const dirname = await createTempName()
+    const db = lmdb.open(dirname, {
       compression: false
     , encoding: 'binary'
     })
@@ -50,10 +50,10 @@ go(async () => {
     , async afterAll() {
         await db.close()
 
-        const { size } = await fs.stat(pathname)
+        const { size } = await fs.stat(dirname)
         console.log(`LMDB (write) size: ${prettyBytes(size)}`)
 
-        await remove(pathname)
+        await remove(dirname)
       }
     }
   })
@@ -78,7 +78,7 @@ go(async () => {
         await Promise.all(promises)
       }
     , async afterAll() {
-        const { size } = await fs.stat(store._pathname)
+        const { size } = await fs.stat(store._dirname)
         console.log(`ExtraDiskStore (write) size: ${prettyBytes(size)}`)
 
         await store.close()
@@ -100,8 +100,8 @@ go(async () => {
   })
 
   benchmark.addCase('LMDB (write)', async () => {
-    const pathname = await createTempName()
-    const db = lmdb.open(pathname, {
+    const dirname = await createTempName()
+    const db = lmdb.open(dirname, {
       compression: false
     , encoding: 'binary'
     })
@@ -119,7 +119,7 @@ go(async () => {
       }
     , async afterAll() {
         await db.close()
-        await remove(pathname)
+        await remove(dirname)
       }
     }
   })
@@ -163,8 +163,8 @@ go(async () => {
   })
 
   benchmark.addCase('LMDB (read)', async () => {
-    const pathname = await createTempName()
-    const db = lmdb.open(pathname, {
+    const dirname = await createTempName()
+    const db = lmdb.open(dirname, {
       compression: false
     , encoding: 'binary'
     })
@@ -182,7 +182,7 @@ go(async () => {
       }
     , async afterAll() {
         await db.close()
-        await remove(pathname)
+        await remove(dirname)
       }
     }
   })

@@ -21,7 +21,7 @@ const value = store.get('key')
 ### DiskStore
 ```ts
 class DiskStore {
-  constructor(pathname: string)
+  constructor(dirname: string)
 
   close(): Promise<void>
 
