@@ -1,5 +1,4 @@
-export { DiskStore } from './disk-store'
-export * from './disk-store-view'
-export * from './disk-store-async-view'
+export * from './disk-store'
+export { DiskStoreWithCache, ICache } from './disk-store-with-cache'
+export { DiskStoreView, IKeyConverter, IValueConverter } from './disk-store-view'
 export * from './converters'
-export * from './types'

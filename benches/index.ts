@@ -3,8 +3,8 @@ import { go } from '@blackglory/prelude'
 import {
   DiskStore
 , DiskStoreView
-, IndexKeyConverter as StoreIndexKeyConverter
-, JSONValueConverter as StoreJSONValueConverter
+, IndexKeyConverter
+, JSONValueConverter
 } from '..'
 import { createTempName, remove } from 'extra-filesystem'
 import fs from 'fs/promises'
@@ -22,7 +22,7 @@ go(async () => {
         map.clear()
       }
     , iterate() {
-        for (let i = 100; i--;) {
+        for (let i = 1000; i--;) {
           map.set(`${i}`, JSON.stringify(i))
         }
       }
@@ -30,10 +30,9 @@ go(async () => {
   })
 
   benchmark.addCase('LMDB (write)', async () => {
-    const filename = await createTempName()
-    const db = lmdb.open({
-      path: filename
-    , compression: false
+    const pathname = await createTempName()
+    const db = lmdb.open(pathname, {
+      compression: false
     , encoding: 'binary'
     })
 
@@ -43,7 +42,7 @@ go(async () => {
       }
     , async iterate() {
         const promises: Array<Promise<unknown>> = []
-        for (let i = 100; i--;) {
+        for (let i = 1000; i--;) {
           promises.push(db.put(`${i}`, Buffer.from(JSON.stringify(i))))
         }
         await Promise.all(promises)
@@ -51,167 +50,164 @@ go(async () => {
     , async afterAll() {
         await db.close()
 
-        const { size } = await fs.stat(filename)
+        const { size } = await fs.stat(pathname)
         console.log(`LMDB (write) size: ${prettyBytes(size)}`)
 
-        await remove(filename)
+        await remove(pathname)
       }
     }
   })
 
   benchmark.addCase('ExtraDiskStore (write)', async () => {
-    const filename = await createTempName()
-    const store = await DiskStore.create(filename)
+    const store = new DiskStore()
     const view = new DiskStoreView(
       store
-    , new StoreIndexKeyConverter()
-    , new StoreJSONValueConverter()
+    , new IndexKeyConverter()
+    , new JSONValueConverter()
     )
 
     return {
-      beforeEach() {
-        store.clear()
+      async beforeEach() {
+        await store.clear()
       }
-    , iterate() {
-        for (let i = 100; i--;) {
-          view.set(i, i)
+    , async iterate() {
+        const promises: Array<Promise<unknown>> = []
+        for (let i = 1000; i--;) {
+          promises.push(view.set(i, i))
         }
+        await Promise.all(promises)
       }
     , async afterAll() {
-        store.close()
-
-        const { size } = await fs.stat(filename)
+        const { size } = await fs.stat(store._pathname)
         console.log(`ExtraDiskStore (write) size: ${prettyBytes(size)}`)
 
-        await remove(filename)
+        await store.close()
       }
     }
   })
 
   benchmark.addCase('Map (overwrite)', async () => {
     const map = new Map<string, string>()
-    for (let i = 100; i--;) {
+    for (let i = 1000; i--;) {
       map.set(`${i}`, JSON.stringify(i))
     }
 
     return () => {
-      for (let i = 100; i--;) {
+      for (let i = 1000; i--;) {
         map.set(`${i}`, JSON.stringify(i))
       }
     }
   })
 
   benchmark.addCase('LMDB (write)', async () => {
-    const filename = await createTempName()
-    const db = lmdb.open({
-      path: filename
-    , compression: false
+    const pathname = await createTempName()
+    const db = lmdb.open(pathname, {
+      compression: false
     , encoding: 'binary'
     })
-    for (let i = 100; i--;) {
+    for (let i = 1000; i--;) {
       await db.put(`${i}`, Buffer.from(JSON.stringify(i)))
     }
 
     return {
       async iterate() {
         const promises: Array<Promise<unknown>> = []
-        for (let i = 100; i--;) {
+        for (let i = 1000; i--;) {
           promises.push(db.put(`${i}`, Buffer.from(JSON.stringify(i))))
         }
         await Promise.all(promises)
       }
     , async afterAll() {
         await db.close()
-        await remove(filename)
+        await remove(pathname)
       }
     }
   })
 
   benchmark.addCase('ExtraDiskStore (overwrite)', async () => {
-    const filename = await createTempName()
-    const store = await DiskStore.create(filename)
+    const store = new DiskStore()
     const view = new DiskStoreView(
       store
-    , new StoreIndexKeyConverter()
-    , new StoreJSONValueConverter()
+    , new IndexKeyConverter()
+    , new JSONValueConverter()
     )
-    for (let i = 100; i--;) {
-      view.set(i, i)
+    for (let i = 1000; i--;) {
+      await view.set(i, i)
     }
 
     return {
-      iterate() {
-        for (let i = 100; i--;) {
-          view.set(i, i)
+      async iterate() {
+        const promises: Array<Promise<unknown>> = []
+        for (let i = 1000; i--;) {
+          promises.push(view.set(i, i))
         }
+        await Promise.all(promises)
       }
     , async afterAll() {
-        store.close()
-        await remove(filename)
+        await store.close()
       }
     }
   })
 
   benchmark.addCase('Map (read)', async () => {
     const map = new Map<string, string>()
-    for (let i = 100; i--;) {
+    for (let i = 1000; i--;) {
       map.set(`${i}`, JSON.stringify(i))
     }
 
     return () => {
-      for (let i = 100; i--;) {
+      for (let i = 1000; i--;) {
         map.set(`${i}`, JSON.stringify(i))
       }
     }
   })
 
   benchmark.addCase('LMDB (read)', async () => {
-    const filename = await createTempName()
-    const db = lmdb.open({
-      path: filename
-    , compression: false
+    const pathname = await createTempName()
+    const db = lmdb.open(pathname, {
+      compression: false
     , encoding: 'binary'
     })
-    for (let i = 100; i--;) {
+    for (let i = 1000; i--;) {
       await db.put(`${i}`, Buffer.from(JSON.stringify(i)))
     }
 
     return {
       async iterate() {
         const promises: Array<Promise<unknown>> = []
-        for (let i = 100; i--;) {
+        for (let i = 1000; i--;) {
           promises.push(db.get(`${i}`))
         }
         await Promise.all(promises)
       }
     , async afterAll() {
         await db.close()
-        await remove(filename)
+        await remove(pathname)
       }
     }
   })
 
   benchmark.addCase('ExtraDiskStore (read)', async () => {
-    const filename = await createTempName()
-    const store = await DiskStore.create(filename)
+    const store = new DiskStore()
     const view = new DiskStoreView(
       store
-    , new StoreIndexKeyConverter()
-    , new StoreJSONValueConverter()
+    , new IndexKeyConverter()
+    , new JSONValueConverter()
     )
-    for (let i = 100; i--;) {
-      view.set(i, i)
+    for (let i = 1000; i--;) {
+      await view.set(i, i)
     }
 
     return {
-      iterate() {
-        for (let i = 100; i--;) {
-          view.get(i)
+      async iterate() {
+        const promises: Array<Promise<unknown>> = []
+        for (let i = 1000; i--;) {
+          promises.push(view.get(i))
         }
+        await Promise.all(promises)
       }
     , async afterAll() {
-        store.close()
-        await remove(filename)
+        await store.close()
       }
     }
   })

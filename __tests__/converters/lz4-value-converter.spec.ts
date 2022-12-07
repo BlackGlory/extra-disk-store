@@ -2,19 +2,19 @@ import { LZ4ValueConverter } from '@converters/lz4-value-converter'
 import { JSONValueConverter } from '@converters/json-value-converter'
 
 describe('LZ4ValueConvertter', () => {
-  test('toBuffer & fromBuffer', () => {
+  test('toBuffer & fromBuffer', async () => {
     const converter = new LZ4ValueConverter(new JSONValueConverter())
 
-    const buffer = converter.toBuffer(['foo', 'bar'])
-    const result = converter.fromBuffer(buffer)
+    const buffer = await converter.toBuffer(['foo', 'bar'])
+    const result = await converter.fromBuffer(buffer)
 
     expect(result).toStrictEqual(['foo', 'bar'])
   })
 
-  test('toBuffer', () => {
+  test('toBuffer', async () => {
     const converter = new LZ4ValueConverter(new JSONValueConverter())
 
-    const result = converter.toBuffer(['foo', 'bar'])
+    const result = await converter.toBuffer(['foo', 'bar'])
 
     expect(result).toStrictEqual(Buffer.from([
       13
@@ -38,10 +38,10 @@ describe('LZ4ValueConvertter', () => {
     ]))
   })
 
-  test('fromBuffer', () => {
+  test('fromBuffer', async () => {
     const converter = new LZ4ValueConverter(new JSONValueConverter())
 
-    const result = converter.fromBuffer(Buffer.from([
+    const result = await converter.fromBuffer(Buffer.from([
       13
     , 0
     , 0

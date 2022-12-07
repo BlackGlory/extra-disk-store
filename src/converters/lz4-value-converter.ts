@@ -1,18 +1,18 @@
 import * as lz4 from 'lz4-wasm-nodejs'
-import { IValueConverter, IValueAsyncConverter } from '@src/types'
+import { IValueConverter } from '@src/types'
 
-export class LZ4ValueConverter<T> implements IValueConverter<T>, IValueAsyncConverter<T> {
+export class LZ4ValueConverter<T> implements IValueConverter<T> {
   constructor(
     private valueConverter: IValueConverter<T>
   ) {}
 
-  toBuffer(value: T): Buffer {
-    const buffer = this.valueConverter.toBuffer(value)
+  async toBuffer(value: T): Promise<Buffer> {
+    const buffer = await this.valueConverter.toBuffer(value)
     return Buffer.from(lz4.compress(buffer))
   }
 
-  fromBuffer(value: Buffer): T {
+  async fromBuffer(value: Buffer): Promise<T> {
     const buffer = Buffer.from(lz4.decompress(value))
-    return this.valueConverter.fromBuffer(buffer)
+    return await this.valueConverter.fromBuffer(buffer)
   }
 }

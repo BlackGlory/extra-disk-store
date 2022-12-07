@@ -5,33 +5,19 @@ interface IRawItem {
   value: Buffer
 }
 
-export function setRawItem(store: DiskStore, raw: IRawItem): void {
-  store._db.prepare(`
-    INSERT INTO store (
-                  key
-                , value
-                )
-         VALUES ($key, $value)
-             ON CONFLICT(key)
-             DO UPDATE SET value = $value
-  `).run(raw)
+export async function setRawItem(store: DiskStore, raw: IRawItem): Promise<void> {
+  await store._db.put(raw.key, raw.value)
 }
 
-export function getRawItem(store: DiskStore, key: string): IRawItem {
-  return store._db.prepare(`
-    SELECT *
-      FROM store
-     WHERE key = $key
-  `).get({ key })
+export function getRawItem(store: DiskStore, key: string): IRawItem | undefined {
+  const value = store._db.getBinary(key)
+  if (value) {
+    return { key, value }
+  } else {
+    return undefined
+  }
 }
 
 export function hasRawItem(store: DiskStore, key: string): boolean {
-  const result: { item_exists: 1 | 0 } = store._db.prepare(`
-    SELECT EXISTS(
-             SELECT *
-               FROM store
-              WHERE key = $key
-           ) AS item_exists
-  `).get({ key })
-  return result.item_exists === 1
+  return store._db.doesExist(key)
 }

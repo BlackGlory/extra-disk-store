@@ -1,6 +1,6 @@
-import { IKeyConverter, IKeyAsyncConverter } from '@src/types'
+import { IKeyConverter } from '@src/types'
 
-export class JSONKeyConverter<T> implements IKeyConverter<T>, IKeyAsyncConverter<T> {
+export class JSONKeyConverter<T> implements IKeyConverter<T> {
   fromString(value: string): T {
     return JSON.parse(value)
   }

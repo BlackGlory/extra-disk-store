@@ -1,6 +1,6 @@
-import { IKeyConverter, IKeyAsyncConverter } from '@src/types'
+import { IKeyConverter } from '@src/types'
 
-export class IndexKeyConverter implements IKeyConverter<number>, IKeyAsyncConverter<number> {
+export class IndexKeyConverter implements IKeyConverter<number> {
   constructor(private radix: number = 10) {}
 
   toString(value: number): string {

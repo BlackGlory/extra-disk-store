@@ -5,8 +5,8 @@ describe('ZstandardValueConvertter', () => {
   test('toBuffer & fromBuffer', async () => {
     const converter = await ZstandardValueConverter.create(new JSONValueConverter(), 1)
 
-    const buffer = converter.toBuffer(['foo', 'bar'])
-    const result = converter.fromBuffer(buffer)
+    const buffer = await converter.toBuffer(['foo', 'bar'])
+    const result = await converter.fromBuffer(buffer)
 
     expect(result).toStrictEqual(['foo', 'bar'])
   })
@@ -14,7 +14,7 @@ describe('ZstandardValueConvertter', () => {
   test('toBuffer', async () => {
     const converter = await ZstandardValueConverter.create(new JSONValueConverter(), 1)
 
-    const result = converter.toBuffer(['foo', 'bar'])
+    const result = await converter.toBuffer(['foo', 'bar'])
 
     expect(result).toStrictEqual(Buffer.from([
       40
@@ -45,7 +45,7 @@ describe('ZstandardValueConvertter', () => {
   test('fromBuffer', async () => {
     const converter = await ZstandardValueConverter.create(new JSONValueConverter(), 1)
 
-    const result = converter.fromBuffer(Buffer.from([
+    const result = await converter.fromBuffer(Buffer.from([
       40
     , 181
     , 47

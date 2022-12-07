@@ -1,7 +1,7 @@
 import * as zstd from '@bokuweb/zstd-wasm'
-import { IValueConverter, IValueAsyncConverter } from '@src/types'
+import { IValueConverter } from '@src/types'
 
-export class ZstandardValueConverter<T> implements IValueConverter<T>, IValueAsyncConverter<T> {
+export class ZstandardValueConverter<T> implements IValueConverter<T> {
   private constructor(
     private valueConverter: IValueConverter<T>
   , private level: number
@@ -15,13 +15,13 @@ export class ZstandardValueConverter<T> implements IValueConverter<T>, IValueAsy
     return new ZstandardValueConverter(valueConverter, level)
   }
 
-  toBuffer(value: T): Buffer {
-    const buffer = this.valueConverter.toBuffer(value)
+  async toBuffer(value: T): Promise<Buffer> {
+    const buffer = await this.valueConverter.toBuffer(value)
     return Buffer.from(zstd.compress(buffer, this.level))
   }
 
-  fromBuffer(value: Buffer): T {
+  async fromBuffer(value: Buffer): Promise<T> {
     const buffer = Buffer.from(zstd.decompress(value))
-    return this.valueConverter.fromBuffer(buffer)
+    return await this.valueConverter.fromBuffer(buffer)
   }
 }

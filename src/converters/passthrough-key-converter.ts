@@ -1,6 +1,6 @@
-import { IKeyConverter, IKeyAsyncConverter } from '@src/types'
+import { IKeyConverter } from '@src/types'
 
-export class PassthroughKeyConverter implements IKeyConverter<string>, IKeyAsyncConverter<string> {
+export class PassthroughKeyConverter implements IKeyConverter<string> {
   toString(value: string): string {
     return value
   }

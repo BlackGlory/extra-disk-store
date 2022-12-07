@@ -12,13 +12,30 @@ yarn add extra-disk-store
 ```ts
 import { DiskStore } from 'extra-disk-store'
 
-const store = await DiskStore.create('/tmp/store')
-store.set('key', Buffer.from('value'))
+const store = new DiskStore('/tmp/store')
+await store.set('key', Buffer.from('value'))
 const value = store.get('key')
 ```
 
 ## API
 ### DiskStore
+```ts
+class DiskStore {
+  constructor(pathname: string)
+
+  close(): Promise<void>
+
+  has(key: string): boolean
+  get(key: string): Buffer | undefined
+  set(key: string, value: Buffer): Promise<void>
+  delete(key: string): Promise<void>
+  clear(): Promise<void>
+
+  keys(): IterableIterator<string>
+}
+```
+
+### DiskStoreWithCache
 ```ts
 interface ICache {
   set(key: string, value: Buffer | boolean | undefined): void
@@ -27,20 +44,20 @@ interface ICache {
   clear(): void
 }
 
-class DiskStore {
-  static create(filename?: string, cache?: ICache): Promise<DiskStore>
+class DiskStoreWithCache {
+  constructor(
+    store: DiskStore
+  , cache: ICache
+  )
 
-  close(): void
+  close(): Promise<void>
 
-  has(key: string): boolean
-  get(key: string): {
-    value: Buffer
-    updatedAt: number
-    timeToLive: number | null
-  }
-  set(key: string, value: Buffer): void
-  delete(key: string): void
-  clear(): void
+  has(key: string): Promise<boolean>
+  get(key: string): Buffer | undefined
+  set(key: string, value: Buffer): Promise<void>
+  delete(key: string): Promise<void>
+  clear(): Promise<void>
+
   keys(): IterableIterator<string>
 }
 ```
@@ -48,128 +65,80 @@ class DiskStore {
 ### DiskStoreView
 ```ts
 interface IKeyConverter<T> {
-  toString: (value: T) => string
-  fromString: (value: string) => T | undefined
-}
-
-interface IValueConverter<T> {
-  toBuffer: (value: T) => Buffer
-  fromBuffer: (value: Buffer) => T
-}
-
-class DiskStoreView<K, V> {
-  constructor(
-    private store: DiskStore
-  , private keyConverter: IKeyConverter<K>
-  , private valueConverter: IValueConverter<V>
-  )
-
-  has(key: K): boolean
-  get(key: K): V | undefined
-  set(key: K, value: V): void
-  clear(): void
-  delete(key: K): void
-  keys(): IterableIterator<K>
-}
-```
-
-### DiskStoreAsyncView
-```ts
-interface IKeyAsyncConverter<T> {
   toString: (value: T) => Awaitable<string>
   fromString: (value: string) => Awaitable<T | undefined>
 }
 
-interface IValueAsyncConverter<T> {
+interface IValueConverter<T> {
   toBuffer: (value: T) => Awaitable<Buffer>
   fromBuffer: (value: Buffer) => Awaitable<T>
 }
 
-class DiskStoreAsyncView<K, V> {
+class DiskStoreView<K, V> {
   constructor(
-    store: DiskStore
-  , keyConverter: IKeyAsyncConverter<K>
-  , valueConverter: IValueAsyncConverter<V>
-  )
+    store: DiskStore | DiskStoreWithCache
+  , keyConverter: IKeyConverter<K>
+  , valueConverter: IValueConverter<V>
+  ) {}
 
   has(key: K): Promise<boolean>
-  get(key: K): Promise<V | undefined>
+  get(key: K): Promise<V | undefined> 
   set(key: K, value: V): Promise<void>
   delete(key: K): Promise<void>
-  clear(): void
-  keys(): AsyncIterableIterator<K>
+  clear(): Promise<void>
+
+  keys(): IterableIterator<K>
 }
 ```
 
 ### Converters
-#### PassthroughKeyConverter
-```ts
-class PassthroughKeyConverter implements IKeyConverter<string>, IKeyAsyncConverter<string>
-```
-
-#### PassthroughValueConverter
-```ts
-class PassthroughValueConverter implements IValueConverter<Buffer>, IValueAsyncConverter<Buffer>
-```
-
 #### IndexKeyConverter
 ```ts
-class IndexKeyConverter implements IKeyConverter<number>, IKeyAsyncConverter<number> {
-  constructor(radix: number = 10)
-}
+class IndexKeyConverter implements IKeyConverter<number>
 ```
 
 #### JSONKeyConverter
 ```ts
-class JSONKeyConverter<T> implements IKeyConverter<T>, IKeyAsyncConverter<T>
+class JSONKeyConverter<T> implements IKeyConverter<T>
 ```
 
 #### JSONValueConverter
 ```ts
-class JSONValueConverter<T> implements IValueConverter<T>, IValueAsyncConverter<T> {
+class JSONValueConverter<T> implements IValueConverter<T> {
   constructor(encoding: BufferEncoding = 'utf-8')
+}
+```
+
+#### PassthroughKeyConverter
+```ts
+class PassthroughKeyConverter implements IKeyConverter<string>
+```
+
+#### PassthroughValueConverter
+```ts
+class PassthroughValueConverter implements IValueConverter<Buffer>
+```
+
+#### PrefixKeyConverter
+```ts
+class PrefixKeyConverter<T> implements IKeyConverter<T> {
+  constructor(keyConverter: IKeyConverter<T>, prefix: string)
 }
 ```
 
 #### LZ4ValueConverter
 ```ts
-class LZ4ValueConverter<T> implements IValueConverter<T>, IValueAsyncConverter<T> {
+class LZ4ValueConverter<T> implements IValueConverter<T> {
   constructor(valueConverter: IValueConverter<T>)
 }
 ```
 
 #### ZstandardValueConverter
 ```ts
-class ZstandardValueConverter<T> implements IValueConverter<T>, IValueAsyncConverter<T> {
+class ZstandardValueConverter<T> implements IValueConverter<T> {
   static create<T>(
     valueConverter: IValueConverter<T>
   , level: number
   ): Promise<ZstandardValueConverter<T>>
-}
-```
-
-#### PrefixKeyConverter
-```ts
-class PrefixKeyConverter<T> implements IKeyConverter<T>, IKeyAsyncConverter<T> {
-  constructor(
-    keyConverter: IKeyConverter<T>
-  , prefix: string
-  )
-
-  toString(value: T): string
-  fromString(value: string): T
-}
-```
-
-#### PrefixKeyAsyncConverter
-```ts
-class PrefixKeyAsyncConverter<T> implements IKeyAsyncConverter<T> {
-  constructor(
-    keyConverter: IKeyConverter<T> | IKeyAsyncConverter<T>
-  , prefix: string
-  )
-
-  toString(value: T): Promise<string>
-  fromString(value: string): Promise<T>
 }
 ```

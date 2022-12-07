@@ -1,6 +1,6 @@
-import { IValueConverter, IValueAsyncConverter } from '@src/types'
+import { IValueConverter } from '@src/types'
 
-export class JSONValueConverter<T> implements IValueConverter<T>, IValueAsyncConverter<T> {
+export class JSONValueConverter<T> implements IValueConverter<T> {
   constructor(private encoding: BufferEncoding = 'utf-8') {}
 
   fromBuffer(buffer: Buffer): T {
