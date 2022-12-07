@@ -18,6 +18,8 @@ export class DiskStore {
     }
 
     this._db = LMDB.open<Buffer, string>(this._pathname, {
+      // 采用其他编码方式可能遇到错误.
+      // 尤其是采用与lmdb-js同作者的msgpackr一定会出现错误, 因为它是一个有问题的实现.
       encoding: 'binary'
     , compression: false
     })
