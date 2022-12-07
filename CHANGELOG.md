@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.2.0](https://github.com/BlackGlory/extra-disk-store/compare/v0.1.5...v0.2.0) (2022-12-07)
+
+
+### ⚠ BREAKING CHANGES
+
+* - Rewritten
+- Replaced sqlite3 with LMDB
+
+### Features
+
+* rewrite ([6376eb4](https://github.com/BlackGlory/extra-disk-store/commit/6376eb4d03a00f1039f58b99663d51cfe1832856))
+
 ### [0.1.5](https://github.com/BlackGlory/extra-disk-store/compare/v0.1.4...v0.1.5) (2022-12-06)
 
 
