@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.3.0](https://github.com/BlackGlory/extra-disk-store/compare/v0.2.1...v0.3.0) (2022-12-08)
+
+
+### ⚠ BREAKING CHANGES
+
+* The return type of `DiskStoreWithCache#has` changed
+
+* improve the return type of `DiskStoreWithCache#has` ([bdafdef](https://github.com/BlackGlory/extra-disk-store/commit/bdafdef3ed5134e5bd0f447149f70a7b566cbc44))
+
 ### [0.2.1](https://github.com/BlackGlory/extra-disk-store/compare/v0.2.0...v0.2.1) (2022-12-07)
 
 ## [0.2.0](https://github.com/BlackGlory/extra-disk-store/compare/v0.1.5...v0.2.0) (2022-12-07)
