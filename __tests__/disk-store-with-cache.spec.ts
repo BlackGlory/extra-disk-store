@@ -19,7 +19,7 @@ describe('DiskStoreWithCache', () => {
       })
       const store = new DiskStoreWithCache(baseStore, cache)
 
-      const result = await store.has('key')
+      const result = store.has('key')
 
       expect(result).toBe(true)
       expect(cache.size).toBe(1)
@@ -31,7 +31,7 @@ describe('DiskStoreWithCache', () => {
       const baseStore = new DiskStore()
       const store = new DiskStoreWithCache(baseStore, cache)
 
-      const result = await store.has('key')
+      const result = store.has('key')
 
       expect(result).toBe(false)
       expect(cache.size).toBe(1)

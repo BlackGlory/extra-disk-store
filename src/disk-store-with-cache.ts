@@ -23,7 +23,7 @@ export class DiskStoreWithCache {
     await this.store.close()
   }
 
-  async has(key: string): Promise<boolean> {
+  has(key: string): boolean {
     const cacheKey = createCacheKey(CacheKeyType.Exist, key)
     const result = this.cache.get(cacheKey)
     if (isBoolean(result)) {

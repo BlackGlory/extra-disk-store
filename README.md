@@ -52,7 +52,7 @@ class DiskStoreWithCache {
 
   close(): Promise<void>
 
-  has(key: string): Promise<boolean>
+  has(key: string): boolean
   get(key: string): Buffer | undefined
   set(key: string, value: Buffer): Promise<void>
   delete(key: string): Promise<void>
@@ -82,7 +82,7 @@ class DiskStoreView<K, V> {
   ) {}
 
   has(key: K): Promise<boolean>
-  get(key: K): Promise<V | undefined> 
+  get(key: K): Promise<V | undefined>
   set(key: K, value: V): Promise<void>
   delete(key: K): Promise<void>
   clear(): Promise<void>
