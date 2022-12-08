@@ -2,6 +2,7 @@ import { Benchmark } from 'extra-benchmark'
 import { go } from '@blackglory/prelude'
 import {
   DiskStore
+, DiskStoreWithCache
 , DiskStoreView
 , IndexKeyConverter
 , JSONValueConverter
@@ -10,6 +11,7 @@ import { createTempName, remove } from 'extra-filesystem'
 import fs from 'fs/promises'
 import prettyBytes from 'pretty-bytes'
 import lmdb from 'lmdb'
+import { LRUMap } from '@blackglory/structures'
 
 const benchmark = new Benchmark('I/O performance')
 
@@ -58,7 +60,7 @@ go(async () => {
     }
   })
 
-  benchmark.addCase('ExtraDiskStore (write)', async () => {
+  benchmark.addCase('DiskStore (write)', async () => {
     const store = new DiskStore()
     const view = new DiskStoreView(
       store
@@ -79,8 +81,33 @@ go(async () => {
       }
     , async afterAll() {
         const { size } = await fs.stat(store._dirname)
-        console.log(`ExtraDiskStore (write) size: ${prettyBytes(size)}`)
+        console.log(`DiskStore (write) size: ${prettyBytes(size)}`)
 
+        await store.close()
+      }
+    }
+  })
+
+  benchmark.addCase('DiskStoreWithCache (write)', async () => {
+    const store = new DiskStoreWithCache(new DiskStore(), new LRUMap(1000))
+    const view = new DiskStoreView(
+      store
+    , new IndexKeyConverter()
+    , new JSONValueConverter()
+    )
+
+    return {
+      async beforeEach() {
+        await store.clear()
+      }
+    , async iterate() {
+        const promises: Array<Promise<unknown>> = []
+        for (let i = 1000; i--;) {
+          promises.push(view.set(i, i))
+        }
+        await Promise.all(promises)
+      }
+    , async afterAll() {
         await store.close()
       }
     }
@@ -124,8 +151,33 @@ go(async () => {
     }
   })
 
-  benchmark.addCase('ExtraDiskStore (overwrite)', async () => {
+  benchmark.addCase('DiskStore (overwrite)', async () => {
     const store = new DiskStore()
+    const view = new DiskStoreView(
+      store
+    , new IndexKeyConverter()
+    , new JSONValueConverter()
+    )
+    for (let i = 1000; i--;) {
+      await view.set(i, i)
+    }
+
+    return {
+      async iterate() {
+        const promises: Array<Promise<unknown>> = []
+        for (let i = 1000; i--;) {
+          promises.push(view.set(i, i))
+        }
+        await Promise.all(promises)
+      }
+    , async afterAll() {
+        await store.close()
+      }
+    }
+  })
+
+  benchmark.addCase('DiskStoreWithCache (overwrite)', async () => {
+    const store = new DiskStoreWithCache(new DiskStore(), new LRUMap(1000))
     const view = new DiskStoreView(
       store
     , new IndexKeyConverter()
@@ -187,8 +239,33 @@ go(async () => {
     }
   })
 
-  benchmark.addCase('ExtraDiskStore (read)', async () => {
+  benchmark.addCase('DiskStore (read)', async () => {
     const store = new DiskStore()
+    const view = new DiskStoreView(
+      store
+    , new IndexKeyConverter()
+    , new JSONValueConverter()
+    )
+    for (let i = 1000; i--;) {
+      await view.set(i, i)
+    }
+
+    return {
+      async iterate() {
+        const promises: Array<Promise<unknown>> = []
+        for (let i = 1000; i--;) {
+          promises.push(view.get(i))
+        }
+        await Promise.all(promises)
+      }
+    , async afterAll() {
+        await store.close()
+      }
+    }
+  })
+
+  benchmark.addCase('DiskStoreWithCache (read)', async () => {
+    const store = new DiskStoreWithCache(new DiskStore(), new LRUMap(1000))
     const view = new DiskStoreView(
       store
     , new IndexKeyConverter()
