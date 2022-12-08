@@ -50,7 +50,7 @@ export class DiskStoreWithCache {
   async set(key: string, value: Buffer): Promise<void> {
     await this.store.set(key, value)
 
-    this.cache?.delete(createCacheKey(CacheKeyType.Value, key))
+    this.cache.delete(createCacheKey(CacheKeyType.Value, key))
   }
 
   async delete(key: string): Promise<void> {
