@@ -55,9 +55,13 @@ describe('DiskStore', () => {
     test('item does not exist', async () => {
       const store = new DiskStore()
 
-      const result = store.get('key')
+      try {
+        const result = store.get('key')
 
-      expect(result).toBeUndefined()
+        expect(result).toBeUndefined()
+      } finally {
+        await store.close()
+      }
     })
   })
 
