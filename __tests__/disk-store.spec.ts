@@ -164,7 +164,7 @@ describe('DiskStore', () => {
 
         const iter = store.keys()
         const key = store.get('key')
-        const result = await iter.next()
+        const result = iter.next()
 
         expect(key).toStrictEqual(Buffer.from('value'))
         expect(result).toStrictEqual({
@@ -186,7 +186,7 @@ describe('DiskStore', () => {
 
         const iter = store.keys()
         store.set('key', Buffer.from('new-value'))
-        const result = await iter.next()
+        const result = iter.next()
 
         expect(result).toStrictEqual({
           done: false

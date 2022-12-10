@@ -153,9 +153,11 @@ describe('DiskStoreWithCache', () => {
 
   describe('keys', () => {
     test('general', async () => {
-      const store = new DiskStore()
+      const cache = new Map()
+      const baseStore = new DiskStore()
+      const store = new DiskStoreWithCache(baseStore, cache)
       try {
-        await setRawItem(store, {
+        await setRawItem(baseStore, {
           key: 'key'
         , value: Buffer.from('value')
         })
@@ -170,16 +172,18 @@ describe('DiskStoreWithCache', () => {
     })
 
     test('edge: read while getting keys', async () => {
-      const store = new DiskStore()
+      const cache = new Map()
+      const baseStore = new DiskStore()
+      const store = new DiskStoreWithCache(baseStore, cache)
       try {
-        await setRawItem(store, {
+        await setRawItem(baseStore, {
           key: 'key'
         , value: Buffer.from('value')
         })
 
         const iter = store.keys()
         const value = store.get('key')
-        const result = await iter.next()
+        const result = iter.next()
 
         expect(value).toStrictEqual(Buffer.from('value'))
         expect(result).toStrictEqual({
@@ -192,16 +196,18 @@ describe('DiskStoreWithCache', () => {
     })
 
     test('edge: write while getting keys', async () => {
-      const store = new DiskStore()
+      const cache = new Map()
+      const baseStore = new DiskStore()
+      const store = new DiskStoreWithCache(baseStore, cache)
       try {
-        await setRawItem(store, {
+        await setRawItem(baseStore, {
           key: 'key'
         , value: Buffer.from('value')
         })
 
         const iter = store.keys()
         await store.set('key', Buffer.from('new-value'))
-        const result = await iter.next()
+        const result = iter.next()
 
         expect(result).toStrictEqual({
           done: false
@@ -215,13 +221,18 @@ describe('DiskStoreWithCache', () => {
 
   describe('close', () => {
     test('create, close', async () => {
-      const store = new DiskStore()
+      const cache = new Map()
+      const baseStore = new DiskStore()
+      const store = new DiskStoreWithCache(baseStore, cache)
 
       await store.close()
     })
 
     test('create, set, close', async () => {
-      const store = new DiskStore()
+      const cache = new Map()
+      const baseStore = new DiskStore()
+      const store = new DiskStoreWithCache(baseStore, cache)
+
       try {
         await store.set('key', Buffer.from('value'))
       } finally {
