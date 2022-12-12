@@ -1,16 +1,11 @@
-import { isBoolean } from '@blackglory/prelude'
+import { isntUndefined } from '@blackglory/prelude'
 import { DiskStore } from './disk-store'
 
 export interface ICache {
-  set(key: string, value: Buffer | boolean | undefined): void
-  get(key: string): Buffer | boolean | undefined
+  set(key: string, value: Buffer | false): void
+  get(key: string): Buffer | false | undefined
   delete(key: string): void
   clear(): void
-}
-
-export enum CacheKeyType {
-  Exist
-, Value
 }
 
 export class DiskStoreWithCache {
@@ -24,40 +19,51 @@ export class DiskStoreWithCache {
   }
 
   has(key: string): boolean {
-    const cacheKey = createCacheKey(CacheKeyType.Exist, key)
-    const result = this.cache.get(cacheKey)
-    if (isBoolean(result)) {
+    const result = this.cache.get(key)
+    if (result === false) {
       return result
+    } else if (isntUndefined(result)) {
+      return true
     } else {
-      const result = this.store.has(key)
-      this.cache.set(cacheKey, result)
-      return result
+      const result = this.store.get(key)
+      if (result) {
+        this.cache.set(key, result)
+        return true
+      } else {
+        this.cache.set(key, false)
+        return false
+      }
     }
   }
 
   get(key: string): Buffer | undefined {
-    const cacheKey = createCacheKey(CacheKeyType.Value, key)
-    const result = this.cache.get(cacheKey)
-    if (result instanceof Buffer) {
+    const result = this.cache.get(key)
+    if (result === false) {
+      return undefined
+    } else if (isntUndefined(result)) {
       return result
     } else {
       const result = this.store.get(key)
-      this.cache.set(cacheKey, result)
-      return result
+      if (result) {
+        this.cache.set(key, result)
+        return result
+      } else {
+        this.cache.set(key, false)
+        return result
+      }
     }
   }
 
   async set(key: string, value: Buffer): Promise<void> {
     await this.store.set(key, value)
 
-    this.cache.delete(createCacheKey(CacheKeyType.Value, key))
+    this.cache.delete(key)
   }
 
   async delete(key: string): Promise<void> {
     await this.store.delete(key)
 
-    this.cache.delete(createCacheKey(CacheKeyType.Exist, key))
-    this.cache.delete(createCacheKey(CacheKeyType.Value, key))
+    this.cache.delete(key)
   }
 
   async clear(): Promise<void> {
@@ -69,8 +75,4 @@ export class DiskStoreWithCache {
   keys(): IterableIterator<string> {
     return this.store.keys()
   }
-}
-
-export function createCacheKey(type: CacheKeyType, key: string): string {
-  return JSON.stringify([type, key])
 }

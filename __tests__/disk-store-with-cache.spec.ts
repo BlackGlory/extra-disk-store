@@ -1,10 +1,6 @@
 import { setRawItem, getRawItem, hasRawItem } from '@test/utils'
 import { DiskStore } from '@src/disk-store'
-import {
-  DiskStoreWithCache
-, createCacheKey
-, CacheKeyType
-} from '@src/disk-store-with-cache'
+import { DiskStoreWithCache } from '@src/disk-store-with-cache'
 import { toArray } from '@blackglory/prelude'
 import '@blackglory/jest-matchers'
 
@@ -24,7 +20,7 @@ describe('DiskStoreWithCache', () => {
 
         expect(result).toBe(true)
         expect(cache.size).toBe(1)
-        expect(cache.get(createCacheKey(CacheKeyType.Exist, 'key'))).toBe(true)
+        expect(cache.get('key')).toStrictEqual(Buffer.from('value'))
       } finally {
         await baseStore.close()
       }
@@ -40,7 +36,7 @@ describe('DiskStoreWithCache', () => {
 
         expect(result).toBe(false)
         expect(cache.size).toBe(1)
-        expect(cache.get(createCacheKey(CacheKeyType.Exist, 'key'))).toBe(false)
+        expect(cache.get('key')).toBe(false)
       } finally {
         await baseStore.close()
       }
@@ -53,7 +49,7 @@ describe('DiskStoreWithCache', () => {
       try {
         const value = Buffer.from('value')
         const cache = new Map()
-        cache.set(createCacheKey(CacheKeyType.Value, 'key'), value)
+        cache.set('key', value)
         await setRawItem(baseStore, {
           key: 'key'
         , value
@@ -68,7 +64,7 @@ describe('DiskStoreWithCache', () => {
 
         expect(result).toStrictEqual(value)
         expect(cache.size).toBe(1)
-        expect(cache.get(createCacheKey(CacheKeyType.Value, 'key'))).toBe(value)
+        expect(cache.get('key')).toBe(value)
       } finally {
         await baseStore.close()
       }
@@ -84,7 +80,7 @@ describe('DiskStoreWithCache', () => {
 
         expect(result).toBeUndefined()
         expect(cache.size).toBe(1)
-        expect(cache.get(createCacheKey(CacheKeyType.Value, 'key'))).toBe(undefined)
+        expect(cache.get('key')).toBe(false)
       } finally {
         await baseStore.close()
       }
@@ -97,7 +93,7 @@ describe('DiskStoreWithCache', () => {
       try {
         const value = Buffer.from('value')
         const cache = new Map()
-        cache.set(createCacheKey(CacheKeyType.Value, 'key'), value)
+        cache.set('key', value)
         await setRawItem(baseStore, {
           key: 'key'
         , value
@@ -122,7 +118,7 @@ describe('DiskStoreWithCache', () => {
       const baseStore = new DiskStore()
       try {
         const cache = new Map()
-        cache.set(createCacheKey(CacheKeyType.Value, 'key'), Buffer.from('value'))
+        cache.set('key', Buffer.from('value'))
         const store = new DiskStoreWithCache(baseStore, cache)
 
         const value = Buffer.from('value')
@@ -144,7 +140,7 @@ describe('DiskStoreWithCache', () => {
     const baseStore = new DiskStore()
     try {
       const cache = new Map()
-      cache.set(createCacheKey(CacheKeyType.Exist, 'key'), Buffer.from('value'))
+      cache.set('key', Buffer.from('value'))
       const value = Buffer.from('value')
       await setRawItem(baseStore, {
         key: 'key'
@@ -166,7 +162,7 @@ describe('DiskStoreWithCache', () => {
     const baseStore = new DiskStore()
     try {
       const cache = new Map()
-      cache.set(createCacheKey(CacheKeyType.Exist, 'key'), Buffer.from('value'))
+      cache.set('key', Buffer.from('value'))
       await setRawItem(baseStore, {
         key: 'key'
       , value: Buffer.from('value')

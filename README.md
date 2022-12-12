@@ -38,8 +38,8 @@ class DiskStore {
 ### DiskStoreWithCache
 ```ts
 interface ICache {
-  set(key: string, value: Buffer | boolean | undefined): void
-  get(key: string): Buffer | boolean | undefined
+  set(key: string, value: Buffer | false): void
+  get(key: string): Buffer | false | undefined
   delete(key: string): void
   clear(): void
 }
