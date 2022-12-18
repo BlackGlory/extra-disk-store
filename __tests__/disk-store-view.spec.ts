@@ -4,7 +4,6 @@ import { DiskStoreView } from '@src/disk-store-view'
 import { toArrayAsync } from '@blackglory/prelude'
 import { delay } from 'extra-promise'
 import { PassthroughKeyConverter, PrefixKeyConverter } from '@src/converters'
-import '@blackglory/jest-matchers'
 
 describe('DiskStoreView', () => {
   describe('has', () => {

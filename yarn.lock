@@ -429,18 +429,6 @@
     extra-timers "^0.2.5"
     justypes "^2.0.0"
 
-"@blackglory/jest-matchers@^0.5.0":
-  version "0.5.0"
-  resolved "https://registry.yarnpkg.com/@blackglory/jest-matchers/-/jest-matchers-0.5.0.tgz#6ea77e34ef5f315ad55c018c5d7224080cfa05da"
-  integrity sha512-7Q42MdT5H+iTMHI7qsCRtCXhGxesRGcVOBnBRGs7QivhhQGWhfn1KaMVO0nVWi1O8auo4FSVVT0jLRWIu9CGJg==
-  dependencies:
-    "@blackglory/go" "^1.1.2"
-    "@blackglory/types" "^1.4.0"
-    "@types/node" "14"
-    extra-filesystem "^0.4.6"
-    extra-stream "^0.1.6"
-    jest-diff "^29.2.1"
-
 "@blackglory/log@^1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@blackglory/log/-/log-1.0.0.tgz#eec748cc8590348a33b3d5fe3f605d5da205d366"
@@ -2344,16 +2332,6 @@ extra-compatible@^0.1.0:
     "@blackglory/prelude" "^0.1.7"
     iterable-operator "^2.1.0"
 
-extra-filesystem@^0.4.6:
-  version "0.4.7"
-  resolved "https://registry.yarnpkg.com/extra-filesystem/-/extra-filesystem-0.4.7.tgz#7cfe6a17fa9e1c6f01a9fea14de1d53a652ecf47"
-  integrity sha512-LRVPiy1oPtRk42pWjEjVPCIZGQk0E2FDxIkQMKLn2rkJD1JG2ESB3pQEek4lvWq5R8vtXP8tsJe9d1SJWtG35g==
-  dependencies:
-    "@blackglory/pass" "^1.1.0"
-    extra-promise "^4.3.0"
-    fs-extra "^10.1.0"
-    tmp-promise "^3.0.3"
-
 extra-filesystem@^0.4.8:
   version "0.4.8"
   resolved "https://registry.yarnpkg.com/extra-filesystem/-/extra-filesystem-0.4.8.tgz#951d7d0b588c59328071c34dd793f52fdc32fb1a"
@@ -2459,13 +2437,6 @@ extra-rand@^0.1.1:
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/extra-rand/-/extra-rand-0.1.1.tgz#e75e71ec96eb2f9b47d2a3c6513b3fb042f05a45"
   integrity sha512-sDpJWzuKa1bTrVVG3dkCiNMt93NanphQIWhW4tUS9PDiA0KTZ+fzyS4Idw+7/lH5ZzxtOiHEJEnBWSN4gi8gyA==
-
-extra-stream@^0.1.6:
-  version "0.1.6"
-  resolved "https://registry.yarnpkg.com/extra-stream/-/extra-stream-0.1.6.tgz#ed082047a3b940dca568b800bf8777a42747fea9"
-  integrity sha512-XeHXSsY039MuSWA+Ms4UZDdDF507/Zk1xO4yokdFgmKHGwIgf6WkDOQd4nAl+bTHxSLUPW1z284F12qkSI2vVQ==
-  dependencies:
-    "@blackglory/types" "^1.4.0"
 
 extra-timers@^0.2.5:
   version "0.2.5"
@@ -3271,7 +3242,7 @@ jest-config@^29.3.1:
     slash "^3.0.0"
     strip-json-comments "^3.1.1"
 
-jest-diff@^29.2.1, jest-diff@^29.3.1:
+jest-diff@^29.3.1:
   version "29.3.1"
   resolved "https://registry.yarnpkg.com/jest-diff/-/jest-diff-29.3.1.tgz#d8215b72fed8f1e647aed2cae6c752a89e757527"
   integrity sha512-vU8vyiO7568tmin2lA3r2DP8oRvzhvRcD4DjpXc6uGveQodyk7CKLhQlCSiwgx3g0pFaE88/KLZ0yaTWMc4Uiw==

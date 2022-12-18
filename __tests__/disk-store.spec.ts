@@ -1,7 +1,6 @@
 import { setRawItem, getRawItem, hasRawItem } from '@test/utils'
 import { DiskStore } from '@src/disk-store'
 import { toArray } from '@blackglory/prelude'
-import '@blackglory/jest-matchers'
 
 describe('DiskStore', () => {
   describe('has', () => {
