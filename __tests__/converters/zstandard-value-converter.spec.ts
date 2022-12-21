@@ -3,7 +3,7 @@ import { JSONValueConverter } from '@converters/json-value-converter'
 
 describe('ZstandardValueConvertter', () => {
   test('toBuffer & fromBuffer', async () => {
-    const converter = await ZstandardValueConverter.create(new JSONValueConverter(), 1)
+    const converter = new ZstandardValueConverter(new JSONValueConverter(), 1)
 
     const buffer = await converter.toBuffer(['foo', 'bar'])
     const result = await converter.fromBuffer(buffer)
@@ -12,7 +12,7 @@ describe('ZstandardValueConvertter', () => {
   })
 
   test('toBuffer', async () => {
-    const converter = await ZstandardValueConverter.create(new JSONValueConverter(), 1)
+    const converter = new ZstandardValueConverter(new JSONValueConverter(), 1)
 
     const result = await converter.toBuffer(['foo', 'bar'])
 
@@ -43,7 +43,7 @@ describe('ZstandardValueConvertter', () => {
   })
 
   test('fromBuffer', async () => {
-    const converter = await ZstandardValueConverter.create(new JSONValueConverter(), 1)
+    const converter = new ZstandardValueConverter(new JSONValueConverter(), 1)
 
     const result = await converter.fromBuffer(Buffer.from([
       40

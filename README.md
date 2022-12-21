@@ -136,9 +136,9 @@ class LZ4ValueConverter<T> implements IValueConverter<T> {
 #### ZstandardValueConverter
 ```ts
 class ZstandardValueConverter<T> implements IValueConverter<T> {
-  static create<T>(
+  constructor(
     valueConverter: IValueConverter<T>
   , level: number
-  ): Promise<ZstandardValueConverter<T>>
+  )
 }
 ```
