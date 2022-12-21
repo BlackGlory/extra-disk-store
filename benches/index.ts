@@ -31,7 +31,34 @@ go(async () => {
     }
   })
 
-  benchmark.addCase('LMDB (write)', async () => {
+  benchmark.addCase('LMDB (write, non-concurrent)', async () => {
+    const dirname = await createTempName()
+    const db = lmdb.open(dirname, {
+      compression: false
+    , encoding: 'binary'
+    })
+
+    return {
+      async beforeEach() {
+        await db.clearAsync()
+      }
+    , async iterate() {
+        for (let i = 1000; i--;) {
+          await db.put(`${i}`, Buffer.from(JSON.stringify(i)))
+        }
+      }
+    , async afterAll() {
+        await db.close()
+
+        const { size } = await fs.stat(dirname)
+        console.log(`LMDB (write) size: ${prettyBytes(size)}`)
+
+        await remove(dirname)
+      }
+    }
+  })
+
+  benchmark.addCase('LMDB (write, concurrent)', async () => {
     const dirname = await createTempName()
     const db = lmdb.open(dirname, {
       compression: false
@@ -60,7 +87,33 @@ go(async () => {
     }
   })
 
-  benchmark.addCase('DiskStore (write)', async () => {
+  benchmark.addCase('DiskStore (write, non-concurrent)', async () => {
+    const store = new DiskStore()
+    const view = new DiskStoreView(
+      store
+    , new IndexKeyConverter()
+    , new JSONValueConverter()
+    )
+
+    return {
+      async beforeEach() {
+        await store.clear()
+      }
+    , async iterate() {
+        for (let i = 1000; i--;) {
+          await view.set(i, i)
+        }
+      }
+    , async afterAll() {
+        const { size } = await fs.stat(store._dirname)
+        console.log(`DiskStore (write) size: ${prettyBytes(size)}`)
+
+        await store.close()
+      }
+    }
+  })
+
+  benchmark.addCase('DiskStore (write, concurrent)', async () => {
     const store = new DiskStore()
     const view = new DiskStoreView(
       store
