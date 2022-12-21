@@ -524,11 +524,6 @@
     justypes "^3.0.0"
     lodash "^4.17.21"
 
-"@bokuweb/zstd-wasm@^0.0.17":
-  version "0.0.17"
-  resolved "https://registry.yarnpkg.com/@bokuweb/zstd-wasm/-/zstd-wasm-0.0.17.tgz#e180d65fa89d498b2b62cfd272a662c58422e2a4"
-  integrity sha512-Ov4HQePHwgeVMRh5ub9+Rk2+SuzvAgeq7epWxEtzQ8WnzVyh3bZQQsdz32rKpd3HU3M+iRPip2/naIyDPjPZUQ==
-
 "@commitlint/cli@^17.3.0":
   version "17.3.0"
   resolved "https://registry.yarnpkg.com/@commitlint/cli/-/cli-17.3.0.tgz#d8497f03e27a5161178e802168d77de2941959a0"
@@ -1047,6 +1042,42 @@
   version "2.7.2"
   resolved "https://registry.yarnpkg.com/@lmdb/lmdb-win32-x64/-/lmdb-win32-x64-2.7.2.tgz#262b774c706de448ef9c04c16c9ebf193d7ea956"
   integrity sha512-beC/L5v1ByVbwILbnnN1xJVlAxfNAm0/HeYgf8h9SuQtdxo5Whnv03eWZ+Sr8Lo2eicnRKlJGzWts+/99kf08w==
+
+"@mongodb-js/zstd-darwin-arm64@1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@mongodb-js/zstd-darwin-arm64/-/zstd-darwin-arm64-1.0.0.tgz#576a6aa5fa0b84185c8de19eb902ae72fcef3ac8"
+  integrity sha512-WRVWJ5BZOcxmbHRPFhUPAIAb8BVLDvH1dJzL3+Wl+xPDevu6eoFKZ6ZPsyyZe4aBFnVgS4bqlpwdQ4ShzrY+HQ==
+
+"@mongodb-js/zstd-darwin-x64@1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@mongodb-js/zstd-darwin-x64/-/zstd-darwin-x64-1.0.0.tgz#4f80dbfe0ae5317a3c3ee2dfcdd0dc82049d53b5"
+  integrity sha512-7cInPU8m3by4EawyaDe3GD0WytrTeS9+B3JX2e+XeDChf9RXzFs+zXmVu51lIq8aqS2J+LwYoBPV/xxPdxTS1g==
+
+"@mongodb-js/zstd-linux-arm64-gnu@1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@mongodb-js/zstd-linux-arm64-gnu/-/zstd-linux-arm64-gnu-1.0.0.tgz#559fb684c120ead6f8a6df570dfde564a54fa254"
+  integrity sha512-qGL8mp2UyJNqGObgnh3NBzAxScVSQxn7bZsLrkSWy1xTytXgAgPmmnmIPhIH5q7Aa/sk797bkIprO8G0bRrNTQ==
+
+"@mongodb-js/zstd-linux-x64-gnu@1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@mongodb-js/zstd-linux-x64-gnu/-/zstd-linux-x64-gnu-1.0.0.tgz#a01300964a3a78d0b3ee6978d0d6cf78e396a573"
+  integrity sha512-5oBwpDjA3pY0XMo6uqr59ZOJjdkY4Yay6szzIRBzk//z1XpWjPs2Lf2zfRlnlzH7Q3EZEoHqFkk+kH9ZvHBC4Q==
+
+"@mongodb-js/zstd-win32-x64-msvc@1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@mongodb-js/zstd-win32-x64-msvc/-/zstd-win32-x64-msvc-1.0.0.tgz#29ede7fb15e76195f1092501575526e71a1dea6d"
+  integrity sha512-c/7D7l0pw9yIsCmuUDxRaJxT9cmxn3A9u1GeslHuz/DRSMVHY6Sb5srMJlBviUF1Q7YGK5teM03JoHso4+vLlw==
+
+"@mongodb-js/zstd@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@mongodb-js/zstd/-/zstd-1.0.0.tgz#2af1efd904fe8c600ad906a945e1b169067dfb3c"
+  integrity sha512-vApdTgi6gxRjgKpKm8z5wtZ5dGNTfh4AewomjMhHanDvCOkv3HQHjJhoodtecdqZnaJm3WcvTYgcL53rQAsOaA==
+  optionalDependencies:
+    "@mongodb-js/zstd-darwin-arm64" "1.0.0"
+    "@mongodb-js/zstd-darwin-x64" "1.0.0"
+    "@mongodb-js/zstd-linux-arm64-gnu" "1.0.0"
+    "@mongodb-js/zstd-linux-x64-gnu" "1.0.0"
+    "@mongodb-js/zstd-win32-x64-msvc" "1.0.0"
 
 "@msgpackr-extract/msgpackr-extract-darwin-arm64@2.2.0":
   version "2.2.0"

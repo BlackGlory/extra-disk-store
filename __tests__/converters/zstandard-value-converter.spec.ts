@@ -21,8 +21,8 @@ describe('ZstandardValueConvertter', () => {
     , 181
     , 47
     , 253
-    , 32
-    , 13
+    , 0
+    , 72
     , 105
     , 0
     , 0

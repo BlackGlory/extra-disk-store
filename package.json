@@ -59,7 +59,7 @@
   },
   "dependencies": {
     "@blackglory/prelude": "^0.1.8",
-    "@bokuweb/zstd-wasm": "^0.0.17",
+    "@mongodb-js/zstd": "^1.0.0",
     "extra-benchmark": "^0.2.2",
     "extra-filesystem": "^0.4.8",
     "extra-promise": "^4.4.0",

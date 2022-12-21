@@ -1,4 +1,4 @@
-import * as zstd from '@bokuweb/zstd-wasm'
+import * as zstd from '@mongodb-js/zstd'
 import { IValueConverter } from '@src/types'
 
 export class ZstandardValueConverter<T> implements IValueConverter<T> {
@@ -11,17 +11,16 @@ export class ZstandardValueConverter<T> implements IValueConverter<T> {
     valueConverter: IValueConverter<T>
   , level: number
   ): Promise<ZstandardValueConverter<T>> {
-    await zstd.init()
     return new ZstandardValueConverter(valueConverter, level)
   }
 
   async toBuffer(value: T): Promise<Buffer> {
     const buffer = await this.valueConverter.toBuffer(value)
-    return Buffer.from(zstd.compress(buffer, this.level))
+    return Buffer.from(await zstd.compress(buffer, this.level))
   }
 
   async fromBuffer(value: Buffer): Promise<T> {
-    const buffer = Buffer.from(zstd.decompress(value))
+    const buffer = Buffer.from(await zstd.decompress(value))
     return await this.valueConverter.fromBuffer(buffer)
   }
 }
