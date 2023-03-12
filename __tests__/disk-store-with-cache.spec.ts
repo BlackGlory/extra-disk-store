@@ -1,7 +1,6 @@
 import { setRawItem, getRawItem, hasRawItem } from '@test/utils.js'
 import { DiskStore } from '@src/disk-store.js'
 import { DiskStoreWithCache } from '@src/disk-store-with-cache.js'
-import { toArray } from '@blackglory/prelude'
 
 describe('DiskStoreWithCache', () => {
   describe('has', () => {
@@ -176,74 +175,6 @@ describe('DiskStoreWithCache', () => {
     } finally {
       await baseStore.close()
     }
-  })
-
-  describe('keys', () => {
-    test('general', async () => {
-      const baseStore = new DiskStore()
-      try {
-        const cache = new Map()
-        const store = new DiskStoreWithCache(baseStore, cache)
-        await setRawItem(baseStore, {
-          key: 'key'
-        , value: Buffer.from('value')
-        })
-
-        const iter = store.keys()
-        const result = toArray(iter)
-
-        expect(result).toStrictEqual(['key'])
-      } finally {
-        await baseStore.close()
-      }
-    })
-
-    test('edge: read while getting keys', async () => {
-      const baseStore = new DiskStore()
-      try {
-        const cache = new Map()
-        const store = new DiskStoreWithCache(baseStore, cache)
-        await setRawItem(baseStore, {
-          key: 'key'
-        , value: Buffer.from('value')
-        })
-
-        const iter = store.keys()
-        const value = store.get('key')
-        const result = iter.next()
-
-        expect(value).toStrictEqual(Buffer.from('value'))
-        expect(result).toStrictEqual({
-          done: false
-        , value: 'key'
-        })
-      } finally {
-        await baseStore.close()
-      }
-    })
-
-    test('edge: write while getting keys', async () => {
-      const baseStore = new DiskStore()
-      try {
-        const cache = new Map()
-        const store = new DiskStoreWithCache(baseStore, cache)
-        await setRawItem(baseStore, {
-          key: 'key'
-        , value: Buffer.from('value')
-        })
-
-        const iter = store.keys()
-        await store.set('key', Buffer.from('new-value'))
-        const result = iter.next()
-
-        expect(result).toStrictEqual({
-          done: false
-        , value: 'key'
-        })
-      } finally {
-        await baseStore.close()
-      }
-    })
   })
 
   describe('close', () => {

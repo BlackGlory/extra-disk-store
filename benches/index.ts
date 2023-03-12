@@ -6,11 +6,11 @@ import {
 , DiskStoreView
 , IndexKeyConverter
 , JSONValueConverter
-} from '..'
+} from '../lib/index.js'
 import { createTempName, remove } from 'extra-filesystem'
 import fs from 'fs/promises'
 import prettyBytes from 'pretty-bytes'
-import lmdb from 'lmdb'
+import * as LMDB from 'lmdb'
 import { LRUMap } from '@blackglory/structures'
 
 const benchmark = new Benchmark('I/O performance')
@@ -33,7 +33,7 @@ go(async () => {
 
   benchmark.addCase('LMDB (write, non-concurrent)', async () => {
     const dirname = await createTempName()
-    const db = lmdb.open(dirname, {
+    const db = LMDB.open(dirname, {
       compression: false
     , encoding: 'binary'
     })
@@ -60,7 +60,7 @@ go(async () => {
 
   benchmark.addCase('LMDB (write, concurrent)', async () => {
     const dirname = await createTempName()
-    const db = lmdb.open(dirname, {
+    const db = LMDB.open(dirname, {
       compression: false
     , encoding: 'binary'
     })
@@ -179,9 +179,9 @@ go(async () => {
     }
   })
 
-  benchmark.addCase('LMDB (write)', async () => {
+  benchmark.addCase('LMDB (overwrite)', async () => {
     const dirname = await createTempName()
-    const db = lmdb.open(dirname, {
+    const db = LMDB.open(dirname, {
       compression: false
     , encoding: 'binary'
     })
@@ -269,7 +269,7 @@ go(async () => {
 
   benchmark.addCase('LMDB (read)', async () => {
     const dirname = await createTempName()
-    const db = lmdb.open(dirname, {
+    const db = LMDB.open(dirname, {
       compression: false
     , encoding: 'binary'
     })

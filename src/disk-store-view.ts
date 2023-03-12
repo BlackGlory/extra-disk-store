@@ -1,8 +1,6 @@
 import { DiskStore } from '@src/disk-store.js'
 import { DiskStoreWithCache } from '@src/disk-store-with-cache.js'
-import { pipe } from 'extra-utils'
-import { mapAsync, filterAsync } from 'iterable-operator'
-import { Awaitable, isntUndefined } from '@blackglory/prelude'
+import { Awaitable } from '@blackglory/prelude'
 
 export interface IKeyConverter<T> {
   toString: (value: T) => Awaitable<string>
@@ -50,13 +48,5 @@ export class DiskStoreView<K, V> {
 
   async clear(): Promise<void> {
     await this.store.clear()
-  }
-
-  keys(): AsyncIterableIterator<K> {
-    return pipe(
-      this.store.keys()
-    , iter => mapAsync(iter, async key => await this.keyConverter.fromString(key))
-    , iter => filterAsync(iter, isntUndefined)
-    )
   }
 }

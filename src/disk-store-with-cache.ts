@@ -71,8 +71,4 @@ export class DiskStoreWithCache {
 
     this.cache.clear()
   }
-
-  keys(): IterableIterator<string> {
-    return this.store.keys()
-  }
 }

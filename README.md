@@ -30,8 +30,6 @@ class DiskStore {
   set(key: string, value: Buffer): Promise<void>
   delete(key: string): Promise<void>
   clear(): Promise<void>
-
-  keys(): IterableIterator<string>
 }
 ```
 
@@ -57,8 +55,6 @@ class DiskStoreWithCache {
   set(key: string, value: Buffer): Promise<void>
   delete(key: string): Promise<void>
   clear(): Promise<void>
-
-  keys(): IterableIterator<string>
 }
 ```
 
@@ -86,8 +82,6 @@ class DiskStoreView<K, V> {
   set(key: K, value: V): Promise<void>
   delete(key: K): Promise<void>
   clear(): Promise<void>
-
-  keys(): IterableIterator<K>
 }
 ```
 
