@@ -14,7 +14,7 @@ import { DiskStore } from 'extra-disk-store'
 
 const store = new DiskStore('/tmp/store')
 await store.set('key', Buffer.from('value'))
-const value = store.get('key')
+const value = await store.get('key')
 ```
 
 ## API
@@ -25,13 +25,11 @@ class DiskStore {
 
   close(): Promise<void>
 
-  has(key: string): boolean
-  get(key: string): Buffer | undefined
+  has(key: string): Promise<boolean>
+  get(key: string): Promise<Buffer | undefined>
   set(key: string, value: Buffer): Promise<void>
   delete(key: string): Promise<void>
   clear(): Promise<void>
-
-  keys(): IterableIterator<string>
 }
 ```
 
@@ -52,13 +50,11 @@ class DiskStoreWithCache {
 
   close(): Promise<void>
 
-  has(key: string): boolean
-  get(key: string): Buffer | undefined
+  has(key: string): Promise<boolean>
+  get(key: string): Promise<Buffer | undefined>
   set(key: string, value: Buffer): Promise<void>
   delete(key: string): Promise<void>
   clear(): Promise<void>
-
-  keys(): IterableIterator<string>
 }
 ```
 
@@ -86,8 +82,6 @@ class DiskStoreView<K, V> {
   set(key: K, value: V): Promise<void>
   delete(key: K): Promise<void>
   clear(): Promise<void>
-
-  keys(): IterableIterator<K>
 }
 ```
 

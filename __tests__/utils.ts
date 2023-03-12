@@ -1,4 +1,5 @@
 import { DiskStore } from '@src/disk-store.js'
+import { sha256 } from 'extra-compatible'
 
 interface IRawItem {
   key: string
@@ -6,11 +7,14 @@ interface IRawItem {
 }
 
 export async function setRawItem(store: DiskStore, raw: IRawItem): Promise<void> {
-  await store._db.put(raw.key, raw.value)
+  await store._db.put(await sha256(raw.key), raw.value)
 }
 
-export function getRawItem(store: DiskStore, key: string): IRawItem | undefined {
-  const value = store._db.getBinary(key)
+export async function getRawItem(
+  store: DiskStore
+, key: string
+): Promise<IRawItem | undefined> {
+  const value = store._db.getBinary(await sha256(key))
   if (value) {
     return { key, value }
   } else {
@@ -18,6 +22,6 @@ export function getRawItem(store: DiskStore, key: string): IRawItem | undefined 
   }
 }
 
-export function hasRawItem(store: DiskStore, key: string): boolean {
-  return store._db.doesExist(key)
+export async function hasRawItem(store: DiskStore, key: string): Promise<boolean> {
+  return store._db.doesExist(await sha256(key))
 }

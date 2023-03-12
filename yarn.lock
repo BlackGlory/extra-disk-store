@@ -2746,7 +2746,7 @@ extra-utils@^4.0.0:
     justypes "^4.0.0"
     lodash "^4.17.21"
 
-extra-utils@^5.0.1, extra-utils@^5.1.0:
+extra-utils@^5.0.1:
   version "5.1.0"
   resolved "https://registry.yarnpkg.com/extra-utils/-/extra-utils-5.1.0.tgz#f5520a3b2cd5a7e3b6a1049f01d6173a244a357e"
   integrity sha512-CvskUlZyqdHzKqLYu+JhcmotjzTss14UODUqoobpqwAkswIFYL2sHXnasb/Lw/pSssd2jw6BI2sjArdJ/jNjfw==
