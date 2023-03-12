@@ -1,5 +1,6 @@
 import { setRawItem, getRawItem, hasRawItem } from '@test/utils.js'
 import { DiskStore } from '@src/disk-store.js'
+import { toArray } from '@blackglory/prelude'
 
 describe('DiskStore', () => {
   describe('has', () => {
@@ -136,6 +137,68 @@ describe('DiskStore', () => {
     } finally {
       await store.close()
     }
+  })
+
+  describe('keys', () => {
+    test('general', async () => {
+      const store = new DiskStore()
+      try {
+        await setRawItem(store, {
+          key: 'key'
+        , value: Buffer.from('value')
+        })
+
+        const iter = store.keys()
+        const result = toArray(iter)
+
+        expect(result).toStrictEqual(['key'])
+      } finally {
+        await store.close()
+      }
+    })
+
+    test('edge: read while getting keys', async () => {
+      const store = new DiskStore()
+      try {
+        await setRawItem(store, {
+          key: 'key'
+        , value: Buffer.from('value')
+        })
+
+        const iter = store.keys()
+        const key = store.get('key')
+        const result = iter.next()
+
+        expect(key).toStrictEqual(Buffer.from('value'))
+        expect(result).toStrictEqual({
+          done: false
+        , value: 'key'
+        })
+      } finally {
+        await store.close()
+      }
+    })
+
+    test('edge: write while getting keys', async () => {
+      const store = new DiskStore()
+      try {
+        await setRawItem(store, {
+          key: 'key'
+        , value: Buffer.from('value')
+        })
+
+        const iter = store.keys()
+        store.set('key', Buffer.from('new-value'))
+        const result = iter.next()
+
+        expect(result).toStrictEqual({
+          done: false
+        , value: 'key'
+        })
+      } finally {
+        await store.close()
+      }
+    })
   })
 
   describe('close', () => {
