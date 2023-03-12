@@ -1,5 +1,5 @@
-import { ZstandardValueConverter } from '@converters/zstandard-value-converter'
-import { JSONValueConverter } from '@converters/json-value-converter'
+import { ZstandardValueConverter } from '@converters/zstandard-value-converter.js'
+import { JSONValueConverter } from '@converters/json-value-converter.js'
 
 describe('ZstandardValueConvertter', () => {
   test('toBuffer & fromBuffer', async () => {

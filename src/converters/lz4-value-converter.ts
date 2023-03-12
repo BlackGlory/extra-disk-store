@@ -1,5 +1,5 @@
 import * as lz4 from 'lz4-wasm-nodejs'
-import { IValueConverter } from '@src/types'
+import { IValueConverter } from '@src/types.js'
 
 export class LZ4ValueConverter<T> implements IValueConverter<T> {
   constructor(

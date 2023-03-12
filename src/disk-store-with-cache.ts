@@ -1,5 +1,5 @@
 import { isntUndefined } from '@blackglory/prelude'
-import { DiskStore } from './disk-store'
+import { DiskStore } from './disk-store.js'
 
 export interface ICache {
   set(key: string, value: Buffer | false): void

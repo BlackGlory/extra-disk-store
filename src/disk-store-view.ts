@@ -1,5 +1,5 @@
-import { DiskStore } from '@src/disk-store'
-import { DiskStoreWithCache } from '@src/disk-store-with-cache'
+import { DiskStore } from '@src/disk-store.js'
+import { DiskStoreWithCache } from '@src/disk-store-with-cache.js'
 import { pipe } from 'extra-utils'
 import { mapAsync, filterAsync } from 'iterable-operator'
 import { Awaitable, isntUndefined } from '@blackglory/prelude'

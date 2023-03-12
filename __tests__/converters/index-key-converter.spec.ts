@@ -1,4 +1,4 @@
-import { IndexKeyConverter } from '@converters/index-key-converter'
+import { IndexKeyConverter } from '@converters/index-key-converter.js'
 
 describe('IndexKeyConverter', () => {
   test('toString & fromString', () => {

@@ -1,9 +1,9 @@
-import { setRawItem, getRawItem, hasRawItem } from '@test/utils'
-import { DiskStore } from '@src/disk-store'
-import { DiskStoreView } from '@src/disk-store-view'
+import { setRawItem, getRawItem, hasRawItem } from '@test/utils.js'
+import { DiskStore } from '@src/disk-store.js'
+import { DiskStoreView } from '@src/disk-store-view.js'
 import { toArrayAsync } from '@blackglory/prelude'
 import { delay } from 'extra-promise'
-import { PassthroughKeyConverter, PrefixKeyConverter } from '@src/converters'
+import { PassthroughKeyConverter, PrefixKeyConverter } from '@src/converters/index.js'
 
 describe('DiskStoreView', () => {
   describe('has', () => {

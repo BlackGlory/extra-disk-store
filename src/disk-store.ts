@@ -1,5 +1,5 @@
 import * as Iter from 'iterable-operator'
-import LMDB from 'lmdb'
+import * as LMDB from 'lmdb'
 import { createTempNameSync, remove } from 'extra-filesystem'
 import { isUndefined } from '@blackglory/prelude'
 

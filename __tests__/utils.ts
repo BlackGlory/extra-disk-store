@@ -1,4 +1,4 @@
-import { DiskStore } from '@src/disk-store'
+import { DiskStore } from '@src/disk-store.js'
 
 interface IRawItem {
   key: string

@@ -1,4 +1,4 @@
-import { IValueConverter } from '@src/types'
+import { IValueConverter } from '@src/types.js'
 
 export class JSONValueConverter<T> implements IValueConverter<T> {
   constructor(private encoding: BufferEncoding = 'utf-8') {}

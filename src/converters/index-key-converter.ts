@@ -1,4 +1,4 @@
-import { IKeyConverter } from '@src/types'
+import { IKeyConverter } from '@src/types.js'
 
 export class IndexKeyConverter implements IKeyConverter<number> {
   constructor(private radix: number = 10) {}

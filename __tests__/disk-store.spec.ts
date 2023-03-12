@@ -1,5 +1,5 @@
-import { setRawItem, getRawItem, hasRawItem } from '@test/utils'
-import { DiskStore } from '@src/disk-store'
+import { setRawItem, getRawItem, hasRawItem } from '@test/utils.js'
+import { DiskStore } from '@src/disk-store.js'
 import { toArray } from '@blackglory/prelude'
 
 describe('DiskStore', () => {

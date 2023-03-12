@@ -1,4 +1,4 @@
-import { JSONKeyConverter } from '@converters/json-key-converter'
+import { JSONKeyConverter } from '@converters/json-key-converter.js'
 
 describe('JSONKeyConverter', () => {
   test('toString & fromString', () => {

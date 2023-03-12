@@ -1,5 +1,5 @@
 import * as zstd from '@mongodb-js/zstd'
-import { IValueConverter } from '@src/types'
+import { IValueConverter } from '@src/types.js'
 
 export class ZstandardValueConverter<T> implements IValueConverter<T> {
   constructor(
