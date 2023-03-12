@@ -8,6 +8,13 @@ npm install --save extra-disk-store
 yarn add extra-disk-store
 ```
 
+## Limitations
+This library uses [lmdb] as the storage layer for performance reasons.
+Unfortunately, lmdb only supports keys of limited size (1978 bytes),
+so make sure you only use this library for scenarios with limited key size.
+
+[lmdb]: https://www.npmjs.org/package/lmdb
+
 ## Usage
 ```ts
 import { DiskStore } from 'extra-disk-store'
