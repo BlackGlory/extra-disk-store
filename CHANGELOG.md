@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.5.0](https://github.com/BlackGlory/extra-disk-store/compare/v0.4.0...v0.5.0) (2023-03-12)
+
+
+### ⚠ BREAKING CHANGES
+
+* Removed `keys` methods
+* - Changed the return value of `has` method.
+- Changed the return value of `get` method.
+- Removed `keys` method.
+* CommonJS => ESM
+
+* upgrade dependencies ([bf6d688](https://github.com/BlackGlory/extra-disk-store/commit/bf6d6881c4bcc1e277b88c250d2d2fcb7aa3ef53))
+* use hash as a substitute for key to bypass key size limit of LMDB ([40b8851](https://github.com/BlackGlory/extra-disk-store/commit/40b885190c3294f659d3cf41fc1327d2c742ec9e))
+* use hash as a substitute for key to bypass key size limit of LMDB ([29ad760](https://github.com/BlackGlory/extra-disk-store/commit/29ad7608d850ac26a54e06f6042bd2b20a9a7e90))
+
 ## [0.4.0](https://github.com/BlackGlory/extra-disk-store/compare/v0.3.2...v0.4.0) (2022-12-21)
 
 
