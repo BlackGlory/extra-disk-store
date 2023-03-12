@@ -18,14 +18,14 @@ export class DiskStoreWithCache {
     await this.store.close()
   }
 
-  async has(key: string): Promise<boolean> {
+  has(key: string): boolean {
     const result = this.cache.get(key)
     if (result === false) {
       return result
     } else if (isntUndefined(result)) {
       return true
     } else {
-      const result = await this.store.get(key)
+      const result = this.store.get(key)
       if (result) {
         this.cache.set(key, result)
         return true
@@ -36,14 +36,14 @@ export class DiskStoreWithCache {
     }
   }
 
-  async get(key: string): Promise<Buffer | undefined> {
+  get(key: string): Buffer | undefined {
     const result = this.cache.get(key)
     if (result === false) {
       return undefined
     } else if (isntUndefined(result)) {
       return result
     } else {
-      const result = await this.store.get(key)
+      const result = this.store.get(key)
       if (result) {
         this.cache.set(key, result)
         return result
@@ -70,5 +70,9 @@ export class DiskStoreWithCache {
     await this.store.clear()
 
     this.cache.clear()
+  }
+
+  keys(): IterableIterator<string> {
+    return this.store.keys()
   }
 }

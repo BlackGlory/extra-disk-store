@@ -1,7 +1,7 @@
+import * as Iter from 'iterable-operator'
 import * as LMDB from 'lmdb'
 import { createTempNameSync, remove } from 'extra-filesystem'
 import { isUndefined } from '@blackglory/prelude'
-import { sha256 } from 'extra-compatible'
 
 export class DiskStore {
   public _db: LMDB.RootDatabase
@@ -33,23 +33,27 @@ export class DiskStore {
     }
   }
 
-  async has(key: string): Promise<boolean> {
-    return this._db.doesExist(await sha256(key))
+  has(key: string): boolean {
+    return this._db.doesExist(key)
   }
 
-  async get(key: string): Promise<Buffer | undefined> {
-    return this._db.getBinary(await sha256(key))
+  get(key: string): Buffer | undefined {
+    return this._db.getBinary(key)
   }
 
   async set(key: string, value: Buffer): Promise<void> {
-    await this._db.put(await sha256(key), value)
+    await this._db.put(key, value)
   }
 
   async delete(key: string): Promise<void> {
-    await this._db.remove(await sha256(key))
+    await this._db.remove(key)
   }
 
   async clear(): Promise<void> {
     await this._db.clearAsync()
+  }
+
+  keys(): IterableIterator<string> {
+    return Iter.map(this._db.getKeys(), key => key as string)
   }
 }
