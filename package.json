@@ -15,7 +15,7 @@
   "license": "MIT",
   "sideEffects": false,
   "engines": {
-    "node": ">=16"
+    "node": ">=18.17.0"
   },
   "scripts": {
     "prepare": "ts-patch install -s",
@@ -25,7 +25,7 @@
     "prepublishOnly": "run-s prepare clean build",
     "clean": "rimraf lib",
     "build": "tsc --project tsconfig.build.json",
-    "bench": "ts-node --esm --require tsconfig-paths/register benches/index.ts",
+    "bench": "tsx benches/index.ts",
     "release": "standard-version"
   },
   "husky": {
@@ -35,39 +35,38 @@
     }
   },
   "devDependencies": {
-    "@blackglory/jest-resolver": "^0.3.0",
-    "@blackglory/structures": "^0.13.1",
-    "@commitlint/cli": "^17.4.4",
-    "@commitlint/config-conventional": "^17.4.4",
-    "@types/jest": "^29.4.0",
-    "@types/node": "16",
-    "@typescript-eslint/eslint-plugin": "^5.54.1",
-    "@typescript-eslint/parser": "^5.54.1",
+    "@blackglory/jest-resolver": "^0.3.1",
+    "@blackglory/structures": "^0.13.4",
+    "@commitlint/cli": "^18.6.1",
+    "@commitlint/config-conventional": "^18.6.2",
+    "@types/jest": "^29.5.12",
+    "@types/node": "18",
+    "@typescript-eslint/eslint-plugin": "^7.0.1",
+    "@typescript-eslint/parser": "^7.0.1",
     "cross-env": "^7.0.3",
-    "eslint": "^8.36.0",
+    "eslint": "^8.56.0",
     "husky": "^4.3.0",
-    "jest": "^29.5.0",
-    "jest-resolve": "^29.5.0",
+    "jest": "^29.7.0",
+    "jest-resolve": "^29.7.0",
     "npm-run-all": "^4.1.5",
-    "pretty-bytes": "6.1.0",
-    "rimraf": "^3.0.2",
+    "pretty-bytes": "6.1.1",
+    "rimraf": "^5.0.5",
     "standard-version": "^9.5.0",
-    "ts-jest": "^29.0.5",
-    "ts-node": "^10.9.1",
-    "ts-patch": "^2.1.0",
-    "tsconfig-paths": "^4.1.2",
-    "typescript": "4.8",
+    "ts-jest": "^29.1.2",
+    "ts-patch": "^3.1.2",
+    "tsx": "^4.7.1",
+    "typescript": "5.3.3",
     "typescript-transform-paths": "^3.4.6"
   },
   "dependencies": {
-    "@blackglory/prelude": "^0.3.1",
-    "@mongodb-js/zstd": "^1.1.0",
-    "extra-benchmark": "^0.2.2",
-    "extra-filesystem": "^0.4.10",
-    "extra-promise": "^6.0.3",
-    "extra-utils": "^5.1.0",
-    "iterable-operator": "^4.0.3",
-    "lmdb": "^2.7.10",
+    "@blackglory/prelude": "^0.3.4",
+    "@mongodb-js/zstd": "^1.2.0",
+    "extra-benchmark": "^0.2.3",
+    "extra-filesystem": "^0.5.1",
+    "extra-promise": "^6.2.0",
+    "extra-utils": "^5.6.0",
+    "iterable-operator": "^5.0.0",
+    "lmdb": "^2.9.2",
     "lz4-wasm-nodejs": "^0.9.2"
   }
 }

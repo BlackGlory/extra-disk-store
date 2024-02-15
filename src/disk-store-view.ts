@@ -55,8 +55,8 @@ export class DiskStoreView<K, V> {
   keys(): AsyncIterableIterator<K> {
     return pipe(
       this.store.keys()
-    , iter => mapAsync(iter, async key => await this.keyConverter.fromString(key))
-    , iter => filterAsync(iter, isntUndefined)
+    , iter => mapAsync(iter, key => this.keyConverter.fromString(key))
+    , iter => filterAsync<Awaited<K> | undefined, Awaited<Awaited<K>>>(iter, isntUndefined)
     )
   }
 }
