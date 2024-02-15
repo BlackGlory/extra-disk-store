@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.6.0](https://github.com/BlackGlory/extra-disk-store/compare/v0.5.1...v0.6.0) (2024-02-15)
+
+
+### ⚠ BREAKING CHANGES
+
+* Node.js v16 => Node.js v18.17
+
+* upgrade dependencies ([b3a7c80](https://github.com/BlackGlory/extra-disk-store/commit/b3a7c80cbed78e6fe0f4a60c38156c3cdf42d2f5))
+
 ### [0.5.1](https://github.com/BlackGlory/extra-disk-store/compare/v0.5.0...v0.5.1) (2023-06-10)
 
 
