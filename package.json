@@ -57,7 +57,7 @@
     "vitest": "^2.1.1"
   },
   "dependencies": {
-    "@blackglory/better-sqlite3-migrations": "^0.1.18",
+    "@blackglory/better-sqlite3-migrations": "^0.1.19",
     "@blackglory/prelude": "^0.3.4",
     "@mongodb-js/zstd": "^1.2.0",
     "better-sqlite3": "^11.3.0",

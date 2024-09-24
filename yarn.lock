@@ -28,10 +28,10 @@
     chalk "^2.0.0"
     js-tokens "^4.0.0"
 
-"@blackglory/better-sqlite3-migrations@^0.1.18":
-  version "0.1.18"
-  resolved "https://registry.yarnpkg.com/@blackglory/better-sqlite3-migrations/-/better-sqlite3-migrations-0.1.18.tgz#3f00ceb788db2f72b1e34ddb67039127d9e2e165"
-  integrity sha512-6m7T8nWkyqQhO7/F+kzwcuyu1m+iX48SNJJAFop2vW7HQEQYBI7qkoW0lVDU0EEdV48MdD9liCQcOQb/xMk6/A==
+"@blackglory/better-sqlite3-migrations@^0.1.19":
+  version "0.1.19"
+  resolved "https://registry.yarnpkg.com/@blackglory/better-sqlite3-migrations/-/better-sqlite3-migrations-0.1.19.tgz#f9ba24863415c5ae29ddcea603d653f55cbc9f39"
+  integrity sha512-9wup8iZbBRpYMafIIiGsAJAIg/NylBxmBrbd6Fgn2iFyWhk1r0didFAda7J0SUp4Pv5AuAaHdJZZJjfGZ6QVzw==
   dependencies:
     "@blackglory/errors" "^2.3.0"
     "@blackglory/types" "^1.4.0"
