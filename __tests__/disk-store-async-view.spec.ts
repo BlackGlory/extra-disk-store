@@ -1,11 +1,12 @@
 import { describe, test, expect } from 'vitest'
 import { setRawItem, getRawItem, hasRawItem } from '@test/utils.js'
 import { DiskStore } from '@src/disk-store.js'
-import { DiskStoreView } from '@src/disk-store-view.js'
-import { toArray } from '@blackglory/prelude'
+import { DiskStoreAsyncView } from '@src/disk-store-async-view.js'
+import { toArrayAsync } from '@blackglory/prelude'
+import { delay } from 'extra-promise'
 import { PassthroughKeyConverter, PrefixKeyConverter } from '@src/converters/index.js'
 
-describe('DiskStoreView', () => {
+describe('DiskStoreAsyncView', () => {
   describe('has', () => {
     test('item exists', async () => {
       const store = await DiskStore.create()
@@ -16,7 +17,7 @@ describe('DiskStoreView', () => {
         })
         const view = createView(store)
 
-        const result = view.has('key')
+        const result = await view.has('key')
 
         expect(result).toBe(true)
       } finally {
@@ -29,7 +30,7 @@ describe('DiskStoreView', () => {
       try {
         const view = createView(store)
 
-        const result = view.has('key')
+        const result = await view.has('key')
 
         expect(result).toBe(false)
       } finally {
@@ -48,7 +49,7 @@ describe('DiskStoreView', () => {
         })
         const view = createView(store)
 
-        const result = view.get('key')
+        const result = await view.get('key')
 
         expect(result).toStrictEqual('value')
       } finally {
@@ -61,7 +62,7 @@ describe('DiskStoreView', () => {
       try {
         const view = createView(store)
 
-        const result = view.get('key')
+        const result = await view.get('key')
 
         expect(result).toBeUndefined()
       } finally {
@@ -81,7 +82,7 @@ describe('DiskStoreView', () => {
         const view = createView(store)
         const newValue = 'new value'
 
-        const result = view.set('key', newValue)
+        const result = await view.set('key', newValue)
 
         expect(result).toBeUndefined()
         expect(getRawItem(store, 'key')).toEqual({
@@ -98,7 +99,7 @@ describe('DiskStoreView', () => {
       try {
         const view = createView(store)
 
-        const result = view.set('key', 'value')
+        const result = await view.set('key', 'value')
 
         expect(result).toBeUndefined()
         expect(getRawItem(store, 'key')).toEqual({
@@ -120,7 +121,7 @@ describe('DiskStoreView', () => {
       })
       const view = createView(store)
 
-      const result = view.delete('key')
+      const result = await view.delete('key')
 
       expect(result).toBeUndefined()
       expect(hasRawItem(store, 'key')).toBeFalsy()
@@ -158,7 +159,7 @@ describe('DiskStoreView', () => {
         const view = createView(store)
 
         const iter = view.keys()
-        const result = toArray(iter)
+        const result = await toArrayAsync(iter)
 
         expect(result).toStrictEqual(['key'])
       } finally {
@@ -180,7 +181,7 @@ describe('DiskStoreView', () => {
         const view = createViewWithPrefix(store, 'prefix-')
 
         const iter = view.keys()
-        const result = toArray(iter)
+        const result = await toArrayAsync(iter)
 
         expect(result).toStrictEqual(['key'])
       } finally {
@@ -193,40 +194,46 @@ describe('DiskStoreView', () => {
 function createViewWithPrefix(
   store: DiskStore
 , prefix: string
-): DiskStoreView<string, string> {
-  return new DiskStoreView<string, string>(
+): DiskStoreAsyncView<string, string> {
+  return new DiskStoreAsyncView<string, string>(
     store
   , new PrefixKeyConverter(
       new PassthroughKeyConverter()
     , prefix
     )
   , { 
-      fromBuffer: x => {
+      fromBuffer: async x => {
+        await delay(0)
         return x.toString()
       }
-    , toBuffer: x => {
+    , toBuffer: async x => {
+        await delay(0)
         return Buffer.from(x)
       }
     }
   )
 }
 
-function createView(store: DiskStore): DiskStoreView<string, string> {
-  return new DiskStoreView<string, string>(
+function createView(store: DiskStore): DiskStoreAsyncView<string, string> {
+  return new DiskStoreAsyncView<string, string>(
     store
   , {
-      toString: x => {
+      toString: async x => {
+        await delay(0)
         return x
       }
-    , fromString: x => {
+    , fromString: async x => {
+        await delay(0)
         return x
       }
     }
   , { 
-      fromBuffer: x => {
+      fromBuffer: async x => {
+        await delay(0)
         return x.toString()
       }
-    , toBuffer: x => {
+    , toBuffer: async x => {
+        await delay(0)
         return Buffer.from(x)
       }
     }

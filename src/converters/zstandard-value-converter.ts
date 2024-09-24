@@ -1,9 +1,9 @@
 import * as zstd from '@mongodb-js/zstd'
-import { IValueConverter } from '@src/types.js'
+import { IValueConverter, IValueAsyncConverter } from '@src/types.js'
 
-export class ZstandardValueConverter<T> implements IValueConverter<T> {
+export class ZstandardValueAsyncConverter<T> implements IValueAsyncConverter<T> {
   constructor(
-    private valueConverter: IValueConverter<T>
+    private valueConverter: IValueConverter<T> | IValueAsyncConverter<T>
   , private level: number
   ) {}
 

@@ -1,18 +1,9 @@
 import { DiskStore } from '@src/disk-store.js'
 import { DiskStoreWithCache } from '@src/disk-store-with-cache.js'
 import { pipe } from 'extra-utils'
-import { mapAsync, filterAsync } from 'iterable-operator'
-import { Awaitable, isntUndefined } from '@blackglory/prelude'
-
-export interface IKeyConverter<T> {
-  toString: (value: T) => Awaitable<string>
-  fromString: (value: string) => Awaitable<T | undefined>
-}
-
-export interface IValueConverter<T> {
-  toBuffer: (value: T) => Awaitable<Buffer>
-  fromBuffer: (value: Buffer) => Awaitable<T>
-}
+import { map, filter } from 'iterable-operator'
+import { isntUndefined } from '@blackglory/prelude'
+import { IKeyConverter, IValueConverter } from './types.js'
 
 export class DiskStoreView<K, V> {
   constructor(
@@ -21,12 +12,12 @@ export class DiskStoreView<K, V> {
   , private valueConverter: IValueConverter<V>
   ) {}
 
-  async has(key: K): Promise<boolean> {
-    return this.store.has(await this.keyConverter.toString(key))
+  has(key: K): boolean {
+    return this.store.has(this.keyConverter.toString(key))
   }
 
-  async get(key: K): Promise<V | undefined> {
-    const buffer = this.store.get(await this.keyConverter.toString(key))
+  get(key: K): V | undefined {
+    const buffer = this.store.get(this.keyConverter.toString(key))
 
     if (buffer) {
       return this.valueConverter.fromBuffer(buffer)
@@ -35,28 +26,26 @@ export class DiskStoreView<K, V> {
     }
   }
 
-  async set(key: K, value: V): Promise<void> {
-    await this.store.set(
-      ...await Promise.all([
-        await this.keyConverter.toString(key)
-      , await this.valueConverter.toBuffer(value)
-      ])
+  set(key: K, value: V): void {
+    this.store.set(
+      this.keyConverter.toString(key)
+    , this.valueConverter.toBuffer(value)
     )
   }
 
-  async delete(key: K): Promise<void> {
-    await this.store.delete(await this.keyConverter.toString(key))
+  delete(key: K): void {
+    this.store.delete(this.keyConverter.toString(key))
   }
 
-  async clear(): Promise<void> {
-    await this.store.clear()
+  clear(): void {
+    this.store.clear()
   }
 
-  keys(): AsyncIterableIterator<K> {
+  keys(): IterableIterator<K> {
     return pipe(
       this.store.keys()
-    , iter => mapAsync(iter, key => this.keyConverter.fromString(key))
-    , iter => filterAsync<Awaited<K> | undefined, Awaited<Awaited<K>>>(iter, isntUndefined)
+    , iter => map(iter, key => this.keyConverter.fromString(key))
+    , iter => filter<K | undefined, K>(iter, isntUndefined)
     )
   }
 }

@@ -1,3 +1,4 @@
+import { describe, test, expect } from 'vitest'
 import { PassthroughKeyConverter } from '@converters/passthrough-key-converter.js'
 
 describe('PassthroughKeyConverter', () => {

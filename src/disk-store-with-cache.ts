@@ -14,8 +14,8 @@ export class DiskStoreWithCache {
   , private cache: ICache
   ) {}
 
-  async close(): Promise<void> {
-    await this.store.close()
+  close(): void {
+    this.store.close()
   }
 
   has(key: string): boolean {
@@ -54,20 +54,20 @@ export class DiskStoreWithCache {
     }
   }
 
-  async set(key: string, value: Buffer): Promise<void> {
-    await this.store.set(key, value)
+  set(key: string, value: Buffer): void {
+    this.store.set(key, value)
 
     this.cache.delete(key)
   }
 
-  async delete(key: string): Promise<void> {
-    await this.store.delete(key)
+  delete(key: string): void {
+    this.store.delete(key)
 
     this.cache.delete(key)
   }
 
-  async clear(): Promise<void> {
-    await this.store.clear()
+  clear(): void {
+    this.store.clear()
 
     this.cache.clear()
   }

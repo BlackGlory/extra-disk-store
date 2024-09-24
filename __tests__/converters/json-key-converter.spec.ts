@@ -1,3 +1,4 @@
+import { describe, test, expect } from 'vitest'
 import { JSONKeyConverter } from '@converters/json-key-converter.js'
 
 describe('JSONKeyConverter', () => {

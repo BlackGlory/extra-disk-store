@@ -1,59 +1,110 @@
+import path from 'path'
+import Database, { Database as IDatabase } from 'better-sqlite3'
+import { findMigrationFilenames, readMigrationFile } from 'migration-files'
+import { migrate } from '@blackglory/better-sqlite3-migrations'
+import { go, assert } from '@blackglory/prelude'
+import { map } from 'extra-promise'
+import { findUpPackageFilename } from 'extra-filesystem'
 import * as Iter from 'iterable-operator'
-import * as LMDB from 'lmdb'
-import { createTempNameSync, remove } from 'extra-filesystem'
-import { isUndefined } from '@blackglory/prelude'
+import { withLazyStatic, lazyStatic } from 'extra-lazy'
+import { fileURLToPath } from 'url'
+
+const __dirname = fileURLToPath(new URL('.', import.meta.url))
 
 export class DiskStore {
-  public _db: LMDB.RootDatabase
-  public _dirname: string
-  private isTempPathname: boolean
+  private constructor(public _db: IDatabase) {}
 
-  constructor(dirname?: string) {
-    if (isUndefined(dirname)) {
-      this._dirname = createTempNameSync()
-      this.isTempPathname = true
-    } else {
-      this._dirname = dirname
-      this.isTempPathname = false
-    }
+  static async create(filename?: string): Promise<DiskStore> {
+    const db = await go(async () => {
+      const db = new Database(filename ?? ':memory:')
 
-    this._db = LMDB.open<Buffer, string>(this._dirname, {
-      // 采用其他编码方式可能遇到错误.
-      // 尤其是采用与lmdb-js同作者的msgpackr一定会出现错误, 因为它是一个有问题的实现.
-      encoding: 'binary'
-    , compression: false
+      await migrateDatabase(db)
+
+      db.unsafeMode(true)
+
+      return db
     })
-  }
 
-  async close(): Promise<void> {
-    await this._db.close()
+    return new this(db)
 
-    if (this.isTempPathname) {
-      await remove(this._dirname)
+    async function migrateDatabase(db: IDatabase): Promise<void> {
+      const packageFilename = await findUpPackageFilename(__dirname)
+      assert(packageFilename, 'package.json not found')
+
+      const packageRoot = path.dirname(packageFilename)
+      const migrationsPath = path.join(packageRoot, 'migrations')
+      const migrationFilenames = await findMigrationFilenames(migrationsPath)
+      const migrations = await map(migrationFilenames, readMigrationFile)
+      migrate(db, migrations)
     }
   }
 
-  has(key: string): boolean {
-    return this._db.doesExist(key)
+
+  close(): void {
+    this._db.exec(`
+      PRAGMA analysis_limit=400;
+      PRAGMA optimize;
+    `)
+
+    this._db.close()
   }
 
-  get(key: string): Buffer | undefined {
-    return this._db.getBinary(key)
-  }
+  has = withLazyStatic((key: string): boolean => {
+    const row = lazyStatic(() => this._db.prepare(`
+      SELECT EXISTS(
+               SELECT *
+                 FROM store
+                WHERE key = $key
+             ) AS item_exists
+    `), [this._db]).get({ key }) as { item_exists: 1 | 0 }
 
-  async set(key: string, value: Buffer): Promise<void> {
-    await this._db.put(key, value)
-  }
+    return row.item_exists === 1
+  })
 
-  async delete(key: string): Promise<void> {
-    await this._db.remove(key)
-  }
+  get = withLazyStatic((key: string): Buffer | undefined => {
+    const row = lazyStatic(() => this._db.prepare(`
+      SELECT value
+        FROM store
+       WHERE key = $key
+    `), [this._db]).get({ key }) as { value: Buffer } | undefined
 
-  async clear(): Promise<void> {
-    await this._db.clearAsync()
-  }
+    return row?.value
+  })
 
-  keys(): IterableIterator<string> {
-    return Iter.map(this._db.getKeys(), key => key as string)
-  }
+  set = withLazyStatic((key: string, value: Buffer): void => {
+    lazyStatic(() => this._db.prepare(`
+      INSERT INTO store (
+                    key
+                  , value
+                  )
+           VALUES ($key, $value)
+               ON CONFLICT(key)
+               DO UPDATE SET value = $value
+    `), [this._db]).run({
+      key
+    , value
+    })
+  })
+
+  delete = withLazyStatic((key: string): void => {
+    lazyStatic(() => this._db.prepare(`
+      DELETE FROM store
+       WHERE key = $key
+    `), [this._db]).run({ key })
+  })
+
+  clear = withLazyStatic((): void => {
+    lazyStatic(() => this._db.prepare(`
+      DELETE FROM store
+    `), [this._db]).run()
+  })
+
+  keys = withLazyStatic((): IterableIterator<string> => {
+    const iter = lazyStatic(() => this._db.prepare(`
+      SELECT key
+        FROM store
+    `), [this._db]).iterate() as IterableIterator<{ key: string }>
+
+    return Iter.map(iter, ({ key }) => key)
+  })
 }

@@ -1,3 +1,4 @@
+import { describe, test, expect } from 'vitest'
 import { IndexKeyConverter } from '@converters/index-key-converter.js'
 
 describe('IndexKeyConverter', () => {
