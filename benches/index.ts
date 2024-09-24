@@ -6,7 +6,7 @@ import {
 , DiskStoreView
 , IndexKeyConverter
 , JSONValueConverter
-} from '../src/index.js'
+} from '../lib/index.js'
 import { createTempName, remove } from 'extra-filesystem'
 import fs from 'fs/promises'
 import prettyBytes from 'pretty-bytes'
