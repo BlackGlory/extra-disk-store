@@ -7,7 +7,11 @@ export class IndexKeyConverter implements IKeyConverter<number> {
     return value.toString(this.radix)
   }
 
-  fromString(value: string): number {
-    return Number.parseInt(value, this.radix)
+  fromString(value: string): number | undefined {
+    const result = Number.parseInt(value, this.radix)
+
+    return Number.isInteger(result)
+         ? result
+         : undefined
   }
 }
